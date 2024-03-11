@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">SODV3203_CarRentalApp</string>
+    <string name="page_login_name">Login Page</string>
+    <string name="page_signup_name">Sign Up Page</string>
+    <string name="page_landing_name">Landing Page</string>
+    <string name="page_profile_name">Profile Page</string>
+    <string name="page_booking_name">Booking Page</string>
+    <string name="page_history_name">History Page</string>
+    <string name="page_search_name">Search Page</string>
+    <string name="page_summary_name">Summary Page</string>
+    <string name="button_back">Back</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_signout">Sign Out</string>
+    <string name="button_next">Next</string>
+    <string name="button_register_user">Register User</string>
+    <string name="button_send">Send Order to Another App</string>
+</resources>
