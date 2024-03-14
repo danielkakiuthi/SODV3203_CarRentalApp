@@ -14,4 +14,26 @@
     <string name="button_next">Next</string>
     <string name="button_register_user">Register User</string>
     <string name="button_send">Send Order to Another App</string>
+<!--Car name-->
+    <string name="car_name_1">Ford Focus</string>
+    <string name="car_name_2">Toyota Camry</string>
+    <string name="car_name_3">Nissan Leaf</string>
+    <string name="car_name_4">Honda CRV</string>
+    <string name="car_name_5">KIA Sportage</string>
+    <string name="car_name_6">Toyota RAV4</string>
+    <string name="car_name_7">Volkswagen Transporter</string>
+
+<!--Car feature-->
+    <string name="car_feature_1">Eco Boost</string>
+    <string name="car_feature_2">Comfort Mode</string>
+    <string name="car_feature_3">Flex fuel</string>
+    <string name="car_feature_4">Vtec LEV</string>
+    <string name="car_feature_5">Full time 4 wheels</string>
+    <string name="car_feature_6">Hybrid vehicle</string>
+    <string name="car_feature_7">Multipurpose seat</string>
+<!--Car category-->
+    <string name="sedan">Sedan</string>
+    <string name="suvs">SUVs</string>
+    <string name="van">Vans</string>
+
 </resources>
