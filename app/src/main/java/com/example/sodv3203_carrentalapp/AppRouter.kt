@@ -40,6 +40,7 @@ enum class PageTypes(@StringRes val title: Int) {
     Login(title = R.string.page_login_name),
     SignUp(title = R.string.page_signup_name),
     Landing(title = R.string.page_landing_name),
+
     Profile(title = R.string.page_profile_name),
     Booking(title = R.string.page_booking_name),
     History(title = R.string.page_history_name),
@@ -85,13 +86,13 @@ fun CarRentalApp(
     val currentPage = PageTypes.valueOf(backStackEntry?.destination?.route ?: PageTypes.Login.name)
 
     Scaffold(
-        topBar = {
-            CarRentalAppBar(
-                currentPage = currentPage,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
-            )
-        }
+//        topBar = {
+//            CarRentalAppBar(
+//                currentPage = currentPage,
+//                canNavigateBack = navController.previousBackStackEntry != null,
+//                navigateUp = { navController.navigateUp() }
+//            )
+//        }
     ) { innerPadding ->
         val uiState by viewModel.uiState.collectAsState()
         NavHost(
@@ -132,8 +133,14 @@ fun CarRentalApp(
                     onSearchButtonClicked = { navController.navigate(PageTypes.Search.name) },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium))
-                )
+                        .padding(dimensionResource(R.dimen.padding_medium)),
+
+//                    onQueryChange:  ,
+//                  onSearch: ((String) -> Unit),
+//                  isSearchActive: Boolean,
+//                  onActiveChanged: (Boolean) -> Unit,
+
+                    )
             }
 
             composable(route = PageTypes.Profile.name) {
