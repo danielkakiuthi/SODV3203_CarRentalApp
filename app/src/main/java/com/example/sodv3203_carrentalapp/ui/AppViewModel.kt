@@ -1,10 +1,19 @@
 package com.example.sodv3203_carrentalapp.ui
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.sodv3203_carrentalapp.data.AppUiState
+import com.example.sodv3203_carrentalapp.data.Car
+import com.example.sodv3203_carrentalapp.data.cars
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 
 class AppViewModel : ViewModel() {
 
@@ -14,6 +23,41 @@ class AppViewModel : ViewModel() {
 
     // Define Custom Methods
 
+    //first state whether the search is happening or not
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
 
+    //second state the text typed by the user
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
+
+    //third state the list to be filtered
+
+    private val _carList = MutableStateFlow(cars)
+    val carList = searchText
+        .combine(_carList) { text, cars ->//combine searchText with _contriesList
+            if (text.isBlank()) { //return the entery list of countries if not is typed
+                cars
+            }
+            cars.filter { car ->// filter and return a list of countries based on the text the user typed
+                car.seat.toString().contains(text)
+            //                car.name.toString(). contains(text)
+            }
+        }.stateIn(//basically convert the Flow returned from combine operator to StateFlow
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),//it will allow the StateFlow survive 5 seconds before it been canceled
+            initialValue = _carList.value
+        )
+
+    fun onSearchTextChange(text: String) {
+        _searchText.value = text
+    }
+
+    fun onToogleSearch() {
+        _isSearching.value = !_isSearching.value
+        if (!_isSearching.value) {
+            onSearchTextChange("")
+        }
+    }
 
 }

@@ -131,6 +131,7 @@ fun CarRentalApp(
                     onBookingButtonClicked = { navController.navigate(PageTypes.Booking.name) },
                     onHistoryButtonClicked = { navController.navigate(PageTypes.History.name) },
                     onSearchButtonClicked = { navController.navigate(PageTypes.Search.name) },
+                    viewModel = AppViewModel(),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(dimensionResource(R.dimen.padding_medium)),
