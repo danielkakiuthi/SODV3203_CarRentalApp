@@ -2,7 +2,9 @@ package com.example.sodv3203_carrentalapp.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +15,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.magnifier
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -28,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.layout.ContentScale
@@ -36,9 +42,12 @@ import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.AppUiState
 import com.example.sodv3203_carrentalapp.data.Car
@@ -59,9 +68,20 @@ fun DisplayPageSearch(
 
 
     Column(
-        modifier = modifier
+        modifier = modifier,
+
     ) {
-//        Text(text = "Placeholder: Search Page")
+        Row {
+
+            Image(
+                painter = painterResource(id = R.drawable.back),
+                contentDescription = null,
+                modifier = Modifier
+                    .clickable { onBackButtonClicked() }
+                    .size(26.dp)
+
+            )
+        }
         Image(
 //            contentScale = ContentScale.Fit,
             painter = painterResource(id = R.drawable.seach_demo),
@@ -78,58 +98,88 @@ fun DisplayPageSearch(
                 .fillMaxWidth()
         ) {
             Card (
-
                 modifier = Modifier
-                    .border(width = 1.dp, color = MaterialTheme.colorScheme.outline)
                     .width(80.dp)
                     .height(80.dp)
+                    .clip(RoundedCornerShape(24.dp))
             ){
                 Column (
-
-                    modifier = Modifier
-                        .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-
-
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
                 ){
                     Text(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
                         text = cars[0].seat.toString(),
                         )
-                    Text(text = "seats")
+                    Text(
+                        text = "seats",
+                        color = MaterialTheme.colorScheme.surfaceTint
+                    )
                 }
             }
             Card (
-
                 modifier = Modifier
-                    .border(width = 1.dp, color = MaterialTheme.colorScheme.outline)
                     .width(80.dp)
                     .height(80.dp)
+                    .clip(RoundedCornerShape(24.dp))
             ){
-                Column {
+                Column (
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                    ){
                     Text(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
                         text = cars[0].bags.toString() ,
                     )
-                    Text(text = "bags")
+                    Text(
+                        text = "bags",
+                        color = MaterialTheme.colorScheme.surfaceTint
+                    )
                 }
             }
             Card (
-
                 modifier = Modifier
-                    .border(width = 1.dp, color = MaterialTheme.colorScheme.outline)
                     .width(80.dp)
                     .height(80.dp)
+                    .clip(RoundedCornerShape(24.dp))
             ){
-                Column {
+                Column (
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                ){
                     Text(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
                         text = cars[0].doors.toString()  ,
                     )
-                    Text(text = "doors")
+                    Text(
+                        text = "doors",
+                        color = MaterialTheme.colorScheme.surfaceTint
+                    )
                 }
             }
         }
-        
-        Text(text = "Car features")
-
+        Row {
+            Text(
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                text = "Car features",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 18.dp, bottom = 18.dp)
+                )
+        }
         Row (
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -137,53 +187,102 @@ fun DisplayPageSearch(
                 .fillMaxWidth()
         ) {
             Card(
-
-                modifier = Modifier
-                    .border(width = 1.dp, color = MaterialTheme.colorScheme.outline)
-                    .width(160.dp)
-                    .height(80.dp)
+                   modifier = Modifier
+                       .width(160.dp)
+                       .height(80.dp)
+                       .clip(RoundedCornerShape(24.dp))
             ) {
                 Column(
-
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center,
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-
-
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(start = 16.dp)
                     ) {
-                    Text(text = "Audio system")
                     Text(
-                        text = stringResource( cars[0].category )
+                        text = "Audio system",
+                        fontWeight = FontWeight.Bold,
+                        )
+                    Text(
+                        text = stringResource( cars[0].category ),
+                        color = MaterialTheme.colorScheme.surfaceTint
                     )
                 }
             }
             Card(
-
                 modifier = Modifier
-                    .border(width = 1.dp, color = MaterialTheme.colorScheme.outline)
                     .width(160.dp)
                     .height(80.dp)
+                    .clip(RoundedCornerShape(24.dp))
             ) {
-                Column {
-                    Text(text = "Connectivity")
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(start = 16.dp)
+                ) {
                     Text(
-                        text = stringResource( cars[0].feature )
+                        text = "Connectivity",
+                        fontWeight = FontWeight.Bold,
+                        )
+                    Text(
+                        text = stringResource( cars[0].feature),
+                        color = MaterialTheme.colorScheme.surfaceTint
+
+
                     )
                 }
             }
         }
 
-        Text(text = "Rental terms")
 
-        Text(text = "Pay at pickup")
-        Text(text = "Free cancellation")
-        Spacer(modifier = Modifier.height(120.dp))
+        Text(
+            text = "Rental terms",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(top = 8.dp , bottom = 8.dp)
+            )
+        Column {
+            Row (
+//                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(24.dp)
+//                    .padding(bottom = 4.dp)
+            ){
+                Text(text = "Pay at pickup")
+                Spacer(Modifier.width(210.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.credit)  ,
+                    contentDescription = null,
+//                    Modifier.size(40.dp)
+                )
+            }
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(32.dp)
+                    .padding(top = 10.dp)
+            ){
+                Text(text = "Free cancellation")
+                Spacer(Modifier.width(185.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.cancel)  ,
+                    contentDescription = null,
+//                    modifier = Modifier
+//                        .width(80.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(20.dp))
         Column (
             modifier = Modifier
-//                .fillMaxHeight()
         ){
             Row (
-//                verticalAlignment = Alignment.Bottom,
             ){
                 Button(
                     modifier = Modifier.fillMaxWidth(),
