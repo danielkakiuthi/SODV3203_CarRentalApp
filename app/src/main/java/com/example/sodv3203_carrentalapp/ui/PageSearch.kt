@@ -256,7 +256,7 @@ fun DisplayPageSearch(
             ){
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = {  },
+                    onClick = onSelectButtonClicked,
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error ),
                     ) {
                     Text( "Select this car")

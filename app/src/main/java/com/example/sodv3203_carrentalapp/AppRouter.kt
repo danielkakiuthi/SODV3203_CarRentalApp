@@ -30,6 +30,7 @@ import com.example.sodv3203_carrentalapp.data.AppUiState
 
 import com.example.sodv3203_carrentalapp.ui.AppViewModel
 import com.example.sodv3203_carrentalapp.ui.DisplayPageBooking
+import com.example.sodv3203_carrentalapp.ui.DisplayPageFinalReservationDetails
 import com.example.sodv3203_carrentalapp.ui.DisplayPageHistory
 import com.example.sodv3203_carrentalapp.ui.DisplayPageLanding
 import com.example.sodv3203_carrentalapp.ui.DisplayPageLogin
@@ -49,6 +50,7 @@ enum class PageTypes(@StringRes val title: Int) {
     Booking(title = R.string.page_booking_name),
     History(title = R.string.page_history_name),
     Search(title = R.string.page_search_name),
+    FinalReservationDetails(title=R.string.page_final_reservation_details_name),
     Summary(title = R.string.page_summary_name)
 }
 
@@ -140,12 +142,6 @@ fun CarRentalApp(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(dimensionResource(R.dimen.padding_medium)),
-
-//                    onQueryChange:  ,
-//                  onSearch: ((String) -> Unit),
-//                  isSearchActive: Boolean,
-//                  onActiveChanged: (Boolean) -> Unit,
-
                     )
             }
 
@@ -183,7 +179,18 @@ fun CarRentalApp(
                 DisplayPageSearch(
                     appUiState = uiState,
                     onBackButtonClicked = { navController.navigate(PageTypes.Landing.name) },
-                    onSelectButtonClicked = { navController.navigate(PageTypes.Summary.name) },
+                    onSelectButtonClicked = { navController.navigate(PageTypes.FinalReservationDetails.name) },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(R.dimen.padding_medium))
+                )
+            }
+
+            composable(route = PageTypes.FinalReservationDetails.name) {
+                DisplayPageFinalReservationDetails(
+                    appUiState = uiState,
+                    onBackButtonClicked = { navController.navigate(PageTypes.Search.name) },
+                    onConfirmButtonClicked = { navController.navigate(PageTypes.Summary.name) },
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(dimensionResource(R.dimen.padding_medium))

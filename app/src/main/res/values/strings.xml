@@ -7,6 +7,7 @@
     <string name="page_booking_name">Booking Page</string>
     <string name="page_history_name">History Page</string>
     <string name="page_search_name">Search Page</string>
+    <string name="page_final_reservation_details_name">Final Reservation Details Page</string>
     <string name="page_summary_name">Summary Page</string>
     <string name="button_back">Back</string>
     <string name="button_cancel">Cancel</string>
@@ -14,7 +15,9 @@
     <string name="button_next">Next</string>
     <string name="button_register_user">Register User</string>
     <string name="button_send">Send Order to Another App</string>
-<!--Car name-->
+    <string name="button_complete_reservation">Complete Reservation</string>
+
+    <!--Car name-->
     <string name="car_name_1">Ford Focus</string>
     <string name="car_name_2">Toyota Camry</string>
     <string name="car_name_3">Nissan Leaf</string>
