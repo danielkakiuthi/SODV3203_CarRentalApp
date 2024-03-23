@@ -48,7 +48,7 @@ fun DisplayPageBooking(
 }
 
 
-@Preview
+@Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageBookingPreview() {
     SODV3203_CarRentalAppTheme {

@@ -56,7 +56,7 @@ fun DisplayPageSignUp(
 }
 
 
-@Preview
+@Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageSignUpPreview() {
     SODV3203_CarRentalAppTheme {

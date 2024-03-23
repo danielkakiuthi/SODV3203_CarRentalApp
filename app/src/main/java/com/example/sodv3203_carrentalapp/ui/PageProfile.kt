@@ -49,7 +49,7 @@ fun DisplayPageProfile(
 }
 
 
-@Preview
+@Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageProfilePreview() {
     SODV3203_CarRentalAppTheme {

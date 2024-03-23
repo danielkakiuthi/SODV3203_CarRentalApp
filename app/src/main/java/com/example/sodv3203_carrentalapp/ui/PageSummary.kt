@@ -56,7 +56,7 @@ fun DisplayPageSummary(
 }
 
 
-@Preview
+@Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageSummaryPreview() {
     SODV3203_CarRentalAppTheme {

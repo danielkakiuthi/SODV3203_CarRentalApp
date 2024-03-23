@@ -9,6 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -18,12 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.sodv3203_carrentalapp.data.AppUiState
 
 import com.example.sodv3203_carrentalapp.ui.AppViewModel
 import com.example.sodv3203_carrentalapp.ui.DisplayPageBooking
@@ -34,6 +37,7 @@ import com.example.sodv3203_carrentalapp.ui.DisplayPageProfile
 import com.example.sodv3203_carrentalapp.ui.DisplayPageSearch
 import com.example.sodv3203_carrentalapp.ui.DisplayPageSignUp
 import com.example.sodv3203_carrentalapp.ui.DisplayPageSummary
+import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
 
 enum class PageTypes(@StringRes val title: Int) {
@@ -127,6 +131,7 @@ fun CarRentalApp(
                 DisplayPageLanding(
                     appUiState = uiState,
                     onSignOutButtonClicked = { navController.navigate(PageTypes.Login.name) },
+                    onLandingButtonClicked = { navController.navigate(PageTypes.Landing.name) },
                     onProfileButtonClicked = { navController.navigate(PageTypes.Profile.name) },
                     onBookingButtonClicked = { navController.navigate(PageTypes.Booking.name) },
                     onHistoryButtonClicked = { navController.navigate(PageTypes.History.name) },
@@ -199,4 +204,19 @@ fun CarRentalApp(
 
     }
 
+}
+
+
+
+@Preview(showBackground = true, heightDp = 800)
+@Composable
+fun DisplayCarRentalAppPreview() {
+    SODV3203_CarRentalAppTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            CarRentalApp()
+        }
+    }
 }

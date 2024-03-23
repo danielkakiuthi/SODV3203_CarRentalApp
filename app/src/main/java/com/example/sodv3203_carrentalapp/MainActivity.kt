@@ -32,9 +32,9 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, heightDp = 800)
 @Composable
-fun GreetingPreview() {
+fun MainActivitygPreview() {
     SODV3203_CarRentalAppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),

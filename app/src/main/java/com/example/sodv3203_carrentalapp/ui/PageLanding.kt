@@ -1,6 +1,5 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,43 +13,31 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.AppUiState
-import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.cars
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
@@ -64,6 +51,7 @@ fun DisplayPageLanding(
     appUiState: AppUiState,
     modifier: Modifier = Modifier,
     onSignOutButtonClicked: () -> Unit = {},
+    onLandingButtonClicked: () -> Unit = {},
     onProfileButtonClicked: () -> Unit = {},
     onBookingButtonClicked: () -> Unit = {},
     onHistoryButtonClicked: () -> Unit = {},
@@ -112,8 +100,6 @@ fun DisplayPageLanding(
 //                )
 //            }
 //        }
-//
-//
 //    }}
 
 
@@ -123,21 +109,18 @@ fun DisplayPageLanding(
 //            .fillMaxWidth()
             .fillMaxSize()
     ) {
-//        Text(text = "Placeholder: Landing Page")
         Row (
             modifier = Modifier
                 .fillMaxWidth()
                 .height(34.dp)
                 .padding(start = 14.dp, end = 14.dp, top = 14.dp)
         ){
-
         Image(painter = painterResource(id = R.drawable.user), contentDescription = null )
         Spacer(modifier = Modifier.weight(0.5f))
         Image(painter = painterResource(id = R.drawable.bell), contentDescription = null )
         }
 
         TextField(
-
             value = text,
             onValueChange = { text = it },
             label = { Text("Search") },
@@ -148,42 +131,41 @@ fun DisplayPageLanding(
                 .align(Alignment.CenterHorizontally)
                 .background(MaterialTheme.colorScheme.inversePrimary)
         )
-            Row (
-                modifier = Modifier
-//                    .weight(0.4f)
-                    .fillMaxWidth()
-                    .height(440.dp)
-                    .padding(top = 16.dp)
-            ){
-                Image(
-                    painter = painterResource(id = R.drawable.starter),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                )
-            }
-            Row(
+        Row (
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .height(440.dp)
+                .padding(top = 16.dp)
+        ){
+            Image(
+                painter = painterResource(id = R.drawable.starter),
+                contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-            ) {
-                LazyRow (){
-                    items(cars){
-                        Image(
-
-                            painter = painterResource( id = it.imageResourceId),
-                            contentDescription = null ,
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.onPrimary)
-                                .border(3.dp, Color.White, shape = RoundedCornerShape(8.dp) )
-                                .height(100.dp)
-                                .width(160.dp)
-                                .padding( end = 4.dp)
-                                .clickable {  }
-                                )
-                    }
+                    .fillMaxHeight()
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            LazyRow (){
+                items(cars){
+                    Image(
+                        painter = painterResource( id = it.imageResourceId),
+                        contentDescription = null ,
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.onPrimary)
+                            .border(3.dp, Color.White, shape = RoundedCornerShape(8.dp))
+                            .height(100.dp)
+                            .width(160.dp)
+                            .padding(end = 4.dp)
+                            .clickable { }
+                    )
                 }
             }
+        }
 
 
 //        var searchQuery by rememberSaveable { mutableStateOf("") }
@@ -196,60 +178,57 @@ fun DisplayPageLanding(
 //            onSearch = onSearch,
 //            active = isSearchActive,
 //            onActiveChange = onActiveChanged) {
-//
 //        }
 //        Row(
 //            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
 //        ) {
-//
 //            Column(
 //                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
 //            ) {
-//
 //                LazyRow (){
 //                    items(cars){
 //                        Image(painter = painterResource(id = it.imageResourceId) , contentDescription = null )
 ////                        Image(painter = Car, contentDescription = )
 //                    }
 //                }
-//
-//
 //            }
 //        }
 
         Row (
-            verticalAlignment = Alignment.Bottom,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
-                .height(50.dp)
+                .height(80.dp)
                 .fillMaxWidth()
-                .padding(top = 30.dp)
-
+                .padding(vertical = 20.dp)
         ){
             Image(
-
                 painter = painterResource(id = R.drawable.home),
                 contentDescription = null,
                 modifier = Modifier
-                    .clickable { onSignOutButtonClicked() }
+                    .clickable { onLandingButtonClicked() }
+                    .height(25.dp)
             )
             Image(
                 painter = painterResource(id = R.drawable.booking),
                 contentDescription = null,
                 modifier = Modifier
                     .clickable { onSearchButtonClicked() }
+                    .height(25.dp)
             )
             Image(
                 painter = painterResource(id = R.drawable.profile),
                 contentDescription = null,
                 modifier = Modifier
                     .clickable { onProfileButtonClicked() }
+                    .height(25.dp)
             )
             Image(
                 painter = painterResource(id = R.drawable.history),
                 contentDescription = null,
                 modifier = Modifier
-                    .clickable { onSignOutButtonClicked() }
+                    .clickable { onHistoryButtonClicked() }
+                    .height(25.dp)
             )
         }
 
@@ -283,6 +262,23 @@ fun DisplayPageLanding(
 //        ) {
 //            Text(stringResource(R.string.button_signout))
 //        }
+    }
+}
+
+
+@Preview(showBackground = true, heightDp = 800)
+@Composable
+fun DisplayPageLandingPreview() {
+    SODV3203_CarRentalAppTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            DisplayPageLanding(
+                appUiState = AppUiState(),
+                viewModel = viewModel()
+            )
+        }
     }
 }
 
