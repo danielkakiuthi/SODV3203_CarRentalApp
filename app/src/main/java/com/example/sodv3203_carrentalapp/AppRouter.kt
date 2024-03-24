@@ -45,7 +45,6 @@ enum class PageTypes(@StringRes val title: Int) {
     Login(title = R.string.page_login_name),
     SignUp(title = R.string.page_signup_name),
     Landing(title = R.string.page_landing_name),
-
     Profile(title = R.string.page_profile_name),
     Booking(title = R.string.page_booking_name),
     History(title = R.string.page_history_name),
