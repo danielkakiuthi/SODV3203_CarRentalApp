@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,34 +18,32 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.twotone.ExitToApp
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.AppUiState
-import com.example.sodv3203_carrentalapp.data.cars
+import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
-@Composable
-public fun tex(int: Int): String{
-    return stringResource(id = int)
-}
 
 @Composable
 fun DisplayPageLanding(
@@ -55,8 +54,7 @@ fun DisplayPageLanding(
     onProfileButtonClicked: () -> Unit = {},
     onBookingButtonClicked: () -> Unit = {},
     onHistoryButtonClicked: () -> Unit = {},
-    onSearchButtonClicked: () -> Unit = {},
-    viewModel: AppViewModel
+    onSearchButtonClicked: (Car) -> Unit = {}
 
 //    onQueryChange: (String) -> Unit,
 //    onSearch: ((String) -> Unit),
@@ -64,15 +62,14 @@ fun DisplayPageLanding(
 //    onActiveChanged: (Boolean) -> Unit,
 ) {
 
-    val viewModel = viewModel
-    val searchText by viewModel.searchText.collectAsState()
-    val isSearching by viewModel.isSearching.collectAsState()
-    val carList by viewModel.carList.collectAsState()
-
-
-    var searchHistory = remember { mutableStateListOf("") }
+    val carsList: List<Car> = appUiState.listAllRegisteredCars
     var text by remember { mutableStateOf("") }
-    var active by remember { mutableStateOf(false) } // Active state for SearchBar
+
+
+//    val searchText by viewModel.searchText.collectAsState()
+//    val isSearching by viewModel.isSearching.collectAsState()
+//    var searchHistory = remember { mutableStateListOf("") }
+//    var active by remember { mutableStateOf(false) } // Active state for SearchBar
 
 //    SearchBar(
 //        query = searchText,
@@ -112,12 +109,20 @@ fun DisplayPageLanding(
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .height(34.dp)
+                .height(40.dp)
                 .padding(start = 14.dp, end = 14.dp, top = 14.dp)
         ){
-        Image(painter = painterResource(id = R.drawable.user), contentDescription = null )
-        Spacer(modifier = Modifier.weight(0.5f))
-        Image(painter = painterResource(id = R.drawable.bell), contentDescription = null )
+        Image(painter = painterResource(id = R.drawable.user), contentDescription = "User" )
+        Text(text = appUiState.loggedUser?.username ?: "username", modifier=Modifier.padding(horizontal = 10.dp))
+        Spacer(modifier = Modifier.weight(1f))
+        Image(painter = painterResource(id = R.drawable.bell), contentDescription = "Notifications" )
+        Button(
+            onClick = onSignOutButtonClicked,
+            contentPadding = PaddingValues(1.dp)
+        ) {
+            Image(imageVector = Icons.TwoTone.ExitToApp, contentDescription = "Logout", modifier = Modifier.height(50.dp) )
+            Text(text = "Logout", fontSize = 13.sp)
+        }
         }
 
         TextField(
@@ -151,7 +156,7 @@ fun DisplayPageLanding(
                 .fillMaxWidth()
         ) {
             LazyRow (){
-                items(cars){
+                items(carsList){
                     Image(
                         painter = painterResource( id = it.imageResourceId),
                         contentDescription = null ,
@@ -161,7 +166,9 @@ fun DisplayPageLanding(
                             .height(100.dp)
                             .width(160.dp)
                             .padding(end = 4.dp)
-                            .clickable { }
+                            .clickable {
+                                onSearchButtonClicked(it)
+                            }
                     )
                 }
             }
@@ -202,18 +209,24 @@ fun DisplayPageLanding(
                 .fillMaxWidth()
                 .padding(vertical = 20.dp)
         ){
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = null,
-                modifier = Modifier
-                    .clickable { onLandingButtonClicked() }
-                    .height(25.dp)
-            )
+            PlainTooltipBox(
+                tooltip = { Text("Add to favorites" ) },
+                contentColor = White
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.home),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickable { onLandingButtonClicked() }
+                        .height(25.dp)
+                        .tooltipAnchor()
+                )
+            }
             Image(
                 painter = painterResource(id = R.drawable.booking),
                 contentDescription = null,
                 modifier = Modifier
-                    .clickable { onSearchButtonClicked() }
+                    .clickable { onBookingButtonClicked() }
                     .height(25.dp)
             )
             Image(
@@ -276,7 +289,7 @@ fun DisplayPageLandingPreview() {
         ) {
             DisplayPageLanding(
                 appUiState = AppUiState(),
-                viewModel = viewModel()
+                onSearchButtonClicked = {}
             )
         }
     }

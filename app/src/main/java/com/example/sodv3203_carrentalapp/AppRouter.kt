@@ -1,5 +1,6 @@
 package com.example.sodv3203_carrentalapp
 
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,7 +27,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.sodv3203_carrentalapp.data.AppUiState
 
 import com.example.sodv3203_carrentalapp.ui.AppViewModel
 import com.example.sodv3203_carrentalapp.ui.DisplayPageBooking
@@ -106,14 +106,25 @@ fun CarRentalApp(
             modifier = Modifier.padding(innerPadding)
         ) {
 
+
             composable(route = PageTypes.Login.name) {
+                val context = LocalContext.current.applicationContext
                 DisplayPageLogin(
                     appUiState = uiState,
+                    viewModel = viewModel,
                     onSignUpButtonClicked = { navController.navigate(PageTypes.SignUp.name) },
-                    onLoginButtonClicked = { navController.navigate(PageTypes.Landing.name) },
+                    onLoginButtonClicked = { username, password ->
+                        viewModel.authenticate(username, password)
+                        if (uiState.isUserLoggedIn) {
+                            Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                            navController.navigate(PageTypes.Landing.name)
+                        }
+                        else {
+                            Toast.makeText(context, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
 
@@ -124,23 +135,26 @@ fun CarRentalApp(
                     onCancelButtonClicked = { navController.navigate(PageTypes.Login.name) },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
 
             composable(route = PageTypes.Landing.name) {
                 DisplayPageLanding(
                     appUiState = uiState,
-                    onSignOutButtonClicked = { navController.navigate(PageTypes.Login.name) },
+                    onSignOutButtonClicked = {
+                        viewModel.signout()
+                        navController.navigate(PageTypes.Login.name)
+                    },
                     onLandingButtonClicked = { navController.navigate(PageTypes.Landing.name) },
                     onProfileButtonClicked = { navController.navigate(PageTypes.Profile.name) },
                     onBookingButtonClicked = { navController.navigate(PageTypes.Booking.name) },
                     onHistoryButtonClicked = { navController.navigate(PageTypes.History.name) },
-                    onSearchButtonClicked = { navController.navigate(PageTypes.Search.name) },
-                    viewModel = AppViewModel(),
+                    onSearchButtonClicked = {
+                        viewModel.updateSelectedCar(it)
+                        navController.navigate(PageTypes.Search.name)
+                    },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium)),
                     )
             }
 
@@ -150,7 +164,6 @@ fun CarRentalApp(
                     onBackButtonClicked = { navController.navigate(PageTypes.Landing.name) },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
 
@@ -160,7 +173,6 @@ fun CarRentalApp(
                     onBackButtonClicked = { navController.navigate(PageTypes.Landing.name) },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
 
@@ -170,7 +182,6 @@ fun CarRentalApp(
                     onBackButtonClicked = { navController.navigate(PageTypes.Landing.name) },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
 
@@ -181,7 +192,6 @@ fun CarRentalApp(
                     onSelectButtonClicked = { navController.navigate(PageTypes.FinalReservationDetails.name) },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
 
@@ -192,7 +202,6 @@ fun CarRentalApp(
                     onConfirmButtonClicked = { navController.navigate(PageTypes.Summary.name) },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
 
@@ -203,7 +212,6 @@ fun CarRentalApp(
                     onConfirmButtonClicked = { navController.navigate(PageTypes.Landing.name) },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
         }

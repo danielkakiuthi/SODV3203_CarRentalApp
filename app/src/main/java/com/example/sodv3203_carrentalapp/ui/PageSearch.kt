@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.AppUiState
-import com.example.sodv3203_carrentalapp.data.cars
+import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
 @Composable
@@ -42,6 +42,9 @@ fun DisplayPageSearch(
     onBackButtonClicked: () -> Unit = {},
     onSelectButtonClicked: () -> Unit = {},
 ) {
+
+    val carsList: List<Car> = appUiState.listAllRegisteredCars
+    val selectedCar: Car = appUiState.selectedCar ?: carsList[0]
 
     Column(
         modifier = modifier,
@@ -57,7 +60,7 @@ fun DisplayPageSearch(
         }
         Image(
 //            contentScale = ContentScale.Fit,
-            painter = painterResource(id = R.drawable.seach_demo),
+            painter = painterResource(id = selectedCar.imageResourceId ?: R.drawable.seach_demo),
             contentDescription =  null,
             modifier = Modifier
                 .height(280.dp)
@@ -86,7 +89,7 @@ fun DisplayPageSearch(
                     Text(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        text = cars[0].seat.toString(),
+                        text = selectedCar.seat.toString(),
                         )
                     Text(
                         text = "seats",
@@ -110,7 +113,7 @@ fun DisplayPageSearch(
                     Text(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        text = cars[0].bags.toString() ,
+                        text = selectedCar.bags.toString() ,
                     )
                     Text(
                         text = "bags",
@@ -134,7 +137,7 @@ fun DisplayPageSearch(
                     Text(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        text = cars[0].doors.toString()  ,
+                        text = selectedCar.doors.toString()  ,
                     )
                     Text(
                         text = "doors",
@@ -178,7 +181,7 @@ fun DisplayPageSearch(
                         fontWeight = FontWeight.Bold,
                         )
                     Text(
-                        text = stringResource( cars[0].category ),
+                        text = stringResource( selectedCar.category ),
                         color = MaterialTheme.colorScheme.surfaceTint
                     )
                 }
@@ -202,7 +205,7 @@ fun DisplayPageSearch(
                         fontWeight = FontWeight.Bold,
                         )
                     Text(
-                        text = stringResource( cars[0].feature),
+                        text = stringResource( selectedCar.feature),
                         color = MaterialTheme.colorScheme.surfaceTint
                     )
                 }
