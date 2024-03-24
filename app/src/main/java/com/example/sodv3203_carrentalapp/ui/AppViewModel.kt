@@ -27,12 +27,13 @@ class AppViewModel : ViewModel() {
         }
     }
 
-    fun authenticate(username: String, password: String) {
+    fun authenticate(username: String, password: String): Boolean {
         for (user in uiState.value.listAllUsers) {
             if (username==user.username && password==user.password) {
                 updateLoggedUser(user)
             }
         }
+        return uiState.value.isUserLoggedIn
     }
 
     fun signout() {

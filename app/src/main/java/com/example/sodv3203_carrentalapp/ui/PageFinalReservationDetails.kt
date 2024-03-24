@@ -14,6 +14,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerFormatter
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -21,6 +25,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -43,6 +48,9 @@ fun DisplayPageFinalReservationDetails(
     onConfirmButtonClicked: () -> Unit = {}
 ) {
 
+
+    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
@@ -57,7 +65,8 @@ fun DisplayPageFinalReservationDetails(
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
-                value = "Pickup Location",
+                placeholder = { Text("123 Ave SW") },
+                value = "",
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -83,58 +92,33 @@ fun DisplayPageFinalReservationDetails(
                     Icon(imageVector = Icons.Filled.LocationOn, contentDescription = "From Date")
                 }
             )
-            OutlinedTextField(
-                value = "Fri, Jan 6, 12:00PM",
-                singleLine = true,
-                shape = MaterialTheme.shapes.large,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    disabledContainerColor = MaterialTheme.colorScheme.surface,
-                ),
-                onValueChange = {},
-                label = {
+            DatePicker(
+                state = datePickerState,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                title = {
                     Text("From Date")
                 },
-                isError = false,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {  }
-                ),
-                trailingIcon = {
-                    Icon(imageVector = Icons.Filled.DateRange, contentDescription = "From Date")
+                headline = {
+                    DatePickerDefaults.DatePickerHeadline(
+                        state = datePickerState,
+                        dateFormatter = DatePickerFormatter(),
+                        modifier = Modifier.padding(0.dp)
+                    )
                 }
             )
-            OutlinedTextField(
-                value = "Sun, Jan 8, 12:00PM",
-                singleLine = true,
-                shape = MaterialTheme.shapes.large,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    disabledContainerColor = MaterialTheme.colorScheme.surface,
-                ),
-                onValueChange = {},
-                label = {
+
+            DatePicker(
+                state = datePickerState,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                title = {
                     Text("To Date")
                 },
-                isError = false,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {  }
-                ),
-                trailingIcon = {
-                    Icon(imageVector = Icons.Filled.DateRange, contentDescription = "To Date")
+                headline = {
+                    DatePickerDefaults.DatePickerHeadline(
+                        state = datePickerState,
+                        dateFormatter = DatePickerFormatter(),
+                        modifier = Modifier.padding(0.dp)
+                    )
                 }
             )
         }
@@ -142,7 +126,8 @@ fun DisplayPageFinalReservationDetails(
         Column {
             Text(text = "Aditional Requests", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             OutlinedTextField(
-                value = "Eg. car model, color, etc",
+                placeholder = { Text("Eg. car model, color, etc") },
+                value = "",
                 singleLine = false,
                 minLines = 4,
                 maxLines = 4,
@@ -157,7 +142,7 @@ fun DisplayPageFinalReservationDetails(
                 ),
                 onValueChange = {},
                 label = {
-                    Text("Pickup Location")
+                    Text("Aditional Requests")
                 },
                 isError = false,
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -173,7 +158,8 @@ fun DisplayPageFinalReservationDetails(
         Column {
             Text(text = "Payment", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             OutlinedTextField(
-                value = "John Doe",
+                placeholder = { Text("John Doe") },
+                value = "",
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -197,7 +183,8 @@ fun DisplayPageFinalReservationDetails(
                 )
             )
             OutlinedTextField(
-                value = "1111 2222 3333 4444",
+                placeholder = { Text("1111 2222 3333 4444") },
+                value = "",
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -221,7 +208,8 @@ fun DisplayPageFinalReservationDetails(
                 )
             )
             OutlinedTextField(
-                value = "123",
+                placeholder = { Text("123") },
+                value = "",
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier

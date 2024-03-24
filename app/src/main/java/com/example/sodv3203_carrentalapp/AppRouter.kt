@@ -114,8 +114,7 @@ fun CarRentalApp(
                     viewModel = viewModel,
                     onSignUpButtonClicked = { navController.navigate(PageTypes.SignUp.name) },
                     onLoginButtonClicked = { username, password ->
-                        viewModel.authenticate(username, password)
-                        if (uiState.isUserLoggedIn) {
+                        if (viewModel.authenticate(username, password)) {
                             Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
                             navController.navigate(PageTypes.Landing.name)
                         }
