@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,12 +56,12 @@ fun DisplayPageLogin(
         modifier = Modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .padding(horizontal = 26.dp, vertical = 90.dp),
+            .padding(horizontal = 26.dp, vertical = 70.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(text = "Car Rental App", fontSize = 30.sp)
         Image(painter = painterResource(id = R.drawable.backgroundcarapp), contentDescription = "" )
-        //Text(text = "Placeholder: Login Page")
         OutlinedTextField(value = username, onValueChange = {username = it},
             label = { Text(text = "Username")},
             shape = RoundedCornerShape(20.dp),
@@ -76,7 +77,7 @@ fun DisplayPageLogin(
         )
 
         OutlinedTextField(value = password, onValueChange = {password = it},
-            label = { Text(text = "Username")},
+            label = { Text(text = "Password")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -111,27 +112,6 @@ fun DisplayPageLogin(
         ) {
             Text(text = "Sign Up", fontSize = 22.sp)
         }
-        
-        /*Row(
-            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
-            ) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onSignUpButtonClicked() }
-                ) {
-                    Text(stringResource(R.string.page_signup_name))
-                }
-                OutlinedButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onLoginButtonClicked() }
-                ) {
-                    Text(stringResource(R.string.page_login_name))
-                }
-            }
-        }*/
     }
 }
 
