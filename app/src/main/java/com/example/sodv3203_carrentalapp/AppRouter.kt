@@ -169,7 +169,18 @@ fun CarRentalApp(
             composable(route = PageTypes.Booking.name) {
                 DisplayPageBooking(
                     appUiState = uiState,
-                    onBackButtonClicked = { navController.navigate(PageTypes.Landing.name) },
+                    onSignOutButtonClicked = {
+                        viewModel.signout()
+                        navController.navigate(PageTypes.Login.name)
+                    },
+                    onLandingButtonClicked = { navController.navigate(PageTypes.Landing.name) },
+                    onProfileButtonClicked = { navController.navigate(PageTypes.Profile.name) },
+                    onBookingButtonClicked = { navController.navigate(PageTypes.Booking.name) },
+                    onHistoryButtonClicked = { navController.navigate(PageTypes.History.name) },
+                    onSearchButtonClicked = {
+                        viewModel.updateSelectedCar(it)
+                        navController.navigate(PageTypes.Search.name)
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                 )
