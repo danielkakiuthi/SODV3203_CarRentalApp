@@ -11,6 +11,10 @@ data class AppUiState(
         User(0, "admin", "admin123")
     ),
 
+    val listAllRegisteredUsers: List<RegisteredUser> = listOf(
+        RegisteredUser(0, "admin", "admin123", "John","Doe","11/19/2020", "123456789", "johndoe@mybvc.ca")
+    ),
+
     //Car State
     val selectedCar: Car? = null,
     val listAllRegisteredCars: List<Car> = listOf(

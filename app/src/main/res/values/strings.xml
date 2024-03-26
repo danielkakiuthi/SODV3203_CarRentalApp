@@ -13,7 +13,8 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_signout">Sign Out</string>
     <string name="button_next">Next</string>
-    <string name="button_register_user">Register User</string>
+    <string name="button_register_user">Register</string>
+    <string name="button_update_user">Update</string>
     <string name="button_send">Confirm Reservation</string>
     <string name="button_complete_reservation">Make Payment</string>
 

@@ -128,9 +128,14 @@ fun CarRentalApp(
             }
 
             composable(route = PageTypes.SignUp.name) {
+                val context = LocalContext.current.applicationContext
                 DisplayPageSignUp(
                     appUiState = uiState,
-                    onRegisterUserButtonClicked = { navController.navigate(PageTypes.Login.name) },
+                    viewModel = viewModel,
+                    onRegisterUserButtonClicked = { username, password, firstname, lastname, birthdate, phone, email ->
+                        Toast.makeText(context, "Signup Successful", Toast.LENGTH_SHORT).show()
+                        navController.navigate(PageTypes.Landing.name)
+                    },
                     onCancelButtonClicked = { navController.navigate(PageTypes.Login.name) },
                     modifier = Modifier
                         .fillMaxSize()
@@ -158,9 +163,15 @@ fun CarRentalApp(
             }
 
             composable(route = PageTypes.Profile.name) {
+                val context = LocalContext.current.applicationContext
                 DisplayPageProfile(
                     appUiState = uiState,
-                    onBackButtonClicked = { navController.navigate(PageTypes.Landing.name) },
+                    viewModel = viewModel,
+                    onUpdateButtonClicked = { username, password, firstname, lastname, birthdate, phone, email ->
+                        Toast.makeText(context, "Update Successful", Toast.LENGTH_SHORT).show()
+                        navController.navigate(PageTypes.Profile.name)
+                    },
+                    onCancelButtonClicked = { navController.navigate(PageTypes.Landing.name) },
                     modifier = Modifier
                         .fillMaxSize()
                 )
