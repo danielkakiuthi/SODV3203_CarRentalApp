@@ -28,4 +28,4 @@ replay_pid*
 local.properties
 
 #.gradle folder
-/.gradle/*
+/.gradle/
