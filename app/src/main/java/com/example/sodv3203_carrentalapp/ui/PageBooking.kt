@@ -14,19 +14,35 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.twotone.ExitToApp
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerFormatter
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,10 +50,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,40 +81,8 @@ fun DisplayPageBooking(
 ) {
     val carsList: List<Car> = appUiState.listAllRegisteredCars
     var text by remember { mutableStateOf("") }
-
-
-//    val searchText by viewModel.searchText.collectAsState()
-//    val isSearching by viewModel.isSearching.collectAsState()
-//    var searchHistory = remember { mutableStateListOf("") }
-//    var active by remember { mutableStateOf(false) } // Active state for SearchBar
-
-//    SearchBar(
-//        query = searchText,
-//        onQueryChange = viewModel::onSearchTextChange,
-//        onSearch = viewModel::onSearchTextChange,
-//        active = isSearching,
-//        onActiveChange = { viewModel.onToogleSearch() } ,
-//        modifier = Modifier.fillMaxWidth(),
-//        placeholder = {
-//            Text(text = "Enter keyword here")
-//        },
-//        trailingIcon = {
-//            Icon(imageVector = Icons.Default.Search, contentDescription = null)
-//        }) {
-//        LazyColumn {
-//            items(carList) { car ->
-//                Text(
-//                    text = stringResource(id = car.name),
-//                    modifier = Modifier.padding(
-//                        start = 8.dp,
-//                        top = 4.dp,
-//                        end = 8.dp,
-//                        bottom = 4.dp
-//                    )
-//                )
-//            }
-//        }
-//    }}
+    val selectedCar: Car = appUiState.selectedCar ?: carsList[0]
+    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
 
 
     Column(
@@ -103,101 +91,309 @@ fun DisplayPageBooking(
 //            .fillMaxWidth()
             .fillMaxSize()
     ) {
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp)
                 .padding(start = 14.dp, end = 14.dp, top = 14.dp)
-        ){
-            Image(painter = painterResource(id = R.drawable.user), contentDescription = "User" )
-            Text(text = appUiState.loggedUser?.username ?: "username", modifier=Modifier.padding(horizontal = 10.dp))
-            Spacer(modifier = Modifier.weight(1f))
-            Image(painter = painterResource(id = R.drawable.bell), contentDescription = "Notifications" )
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.user),
+                contentDescription = "User"
+            )
+            Text(
+                text = appUiState.loggedUser?.username ?: "username",
+                modifier = Modifier.padding(horizontal = 10.dp)
+            )
+            Spacer(
+                modifier = Modifier
+                    .weight(1f)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.bell),
+                contentDescription = "Notifications"
+            )
             Button(
                 onClick = onSignOutButtonClicked,
                 contentPadding = PaddingValues(1.dp)
             ) {
-                Image(imageVector = Icons.TwoTone.ExitToApp, contentDescription = "Logout", modifier = Modifier.height(50.dp) )
+                Image(
+                    imageVector = Icons.TwoTone.ExitToApp,
+                    contentDescription = "Logout",
+                    modifier = Modifier.height(50.dp)
+                )
                 Text(text = "Logout", fontSize = 13.sp)
             }
         }
 
-        TextField(
-            value = text,
-            onValueChange = { text = it },
-            label = { Text("Search") },
-            modifier = Modifier
-                .padding(top = 16.dp)
-                .height(26.dp)
-                .width(340.dp)
-                .align(Alignment.CenterHorizontally)
-                .background(MaterialTheme.colorScheme.inversePrimary)
-        )
-        Row (
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .height(440.dp)
-                .padding(top = 16.dp)
-        ){
-            /*Image(
-                painter = painterResource(id = R.drawable.starter),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            )*/
-        }
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .weight(1f)
+                .padding(top = 16.dp)
         ) {
-            /*LazyRow (){
-                items(carsList){
-                    Image(
-                        painter = painterResource( id = it.imageResourceId),
-                        contentDescription = null ,
+            Column {
+                Text(
+                    text = "Booking Information",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+
+                Image(
+
+                    painter = painterResource(
+                        id = selectedCar.imageResourceId ?: R.drawable.seach_demo
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(100.dp)
+                        .fillMaxWidth()
+                        .padding(bottom = 0.dp)
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Card(
                         modifier = Modifier
-                            .background(MaterialTheme.colorScheme.onPrimary)
-                            .border(3.dp, Color.White, shape = RoundedCornerShape(8.dp))
-                            .height(100.dp)
-                            .width(160.dp)
-                            .padding(end = 4.dp)
-                            .clickable {
-                                onSearchButtonClicked(it)
-                            }
+                            .width(80.dp)
+                            .height(80.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                        ) {
+                            Text(
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                text = selectedCar.seat.toString(),
+                            )
+                            Text(
+                                text = "seats",
+                                color = MaterialTheme.colorScheme.surfaceTint
+                            )
+                        }
+                    }
+                    Card (
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(80.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                    ){
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                        ){
+                            Text(
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                text = selectedCar.doors.toString()  ,
+                            )
+                            Text(
+                                text = "doors",
+                                color = MaterialTheme.colorScheme.surfaceTint
+                            )
+                        }
+                    }
+                    Card (
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(80.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                    ){
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                        ){
+                            Text(
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                text = selectedCar.bags.toString() ,
+                            )
+                            Text(
+                                text = "bags",
+                                color = MaterialTheme.colorScheme.surfaceTint
+                            )
+                        }
+                    }
+                }
+                Row {
+                    Text(
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        text = "Car features",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 18.dp, bottom = 18.dp)
                     )
                 }
-            }*/
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .width(160.dp)
+                            .height(50.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp)
+                        ) {
+                            Text(
+                                text = "Audio system",
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = stringResource( selectedCar.category ),
+                                color = MaterialTheme.colorScheme.surfaceTint
+                            )
+                        }
+                    }
+                    Card(
+                        modifier = Modifier
+                            .width(160.dp)
+                            .height(50.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+
+                                .padding(start = 16.dp)
+                        ) {
+                            Text(
+                                text = "Connectivity",
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = stringResource( selectedCar.feature),
+                                color = MaterialTheme.colorScheme.surfaceTint
+                            )
+                        }
+                    }
+                }
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp)
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .width(160.dp)
+                            .height(50.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                            .padding(vertical = 5.dp)
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp)
+                        ) {
+                            Text(
+                                text = "Audio system",
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = stringResource( selectedCar.category ),
+                                color = MaterialTheme.colorScheme.surfaceTint
+                            )
+                        }
+                    }
+                    Card(
+                        modifier = Modifier
+                            .width(160.dp)
+                            .height(50.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                            .padding(vertical = 5.dp)
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+
+                                .padding(start = 16.dp)
+                        ) {
+                            Text(
+                                text = "Connectivity",
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = stringResource( selectedCar.feature),
+                                color = MaterialTheme.colorScheme.surfaceTint
+                            )
+                        }
+                    }
+                }
+                Text(
+                    text = "Order Summary",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Column(
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Ford Focus or similar",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "$51/day, 2 days",
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "Pickup & Dropoff",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                    )
+                    Card_PickupDropoff(
+                        location="Calgary",
+                        datetime="Fri, Jan 6, 12:00PM"
+                    )
+                    Card_PickupDropoff(
+                        location="Edmonton",
+                        datetime="Sun, Jan 8, 12:00PM"
+                    )
+                }
+            }
+
         }
-
-
-//        var searchQuery by rememberSaveable { mutableStateOf("") }
-//        SearchBar(
-//            query = searchQuery ,
-//            onQueryChange = { query ->
-//                searchQuery = query
-//                onQueryChange(query)
-//            },
-//            onSearch = onSearch,
-//            active = isSearchActive,
-//            onActiveChange = onActiveChanged) {
-//        }
-//        Row(
-//            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
-//        ) {
-//            Column(
-//                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
-//            ) {
-//                LazyRow (){
-//                    items(cars){
-//                        Image(painter = painterResource(id = it.imageResourceId) , contentDescription = null )
-////                        Image(painter = Car, contentDescription = )
-//                    }
-//                }
-//            }
-//        }
-
         Row (
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -241,40 +437,50 @@ fun DisplayPageBooking(
                     .height(25.dp)
             )
         }
-
-//        Button(
-//            modifier = Modifier.fillMaxWidth(),
-//            onClick = { onProfileButtonClicked() }
-//        ) {
-//            Text(stringResource(R.string.page_profile_name))
-//        }
-//        Button(
-//            modifier = Modifier.fillMaxWidth(),
-//            onClick = { onBookingButtonClicked() }
-//        ) {
-//            Text(stringResource(R.string.page_booking_name))
-//        }
-//        Button(
-//            modifier = Modifier.fillMaxWidth(),
-//            onClick = { onHistoryButtonClicked() }
-//        ) {
-//            Text(stringResource(R.string.page_history_name))
-//        }
-//        Button(
-//            modifier = Modifier.fillMaxWidth(),
-//            onClick = { onSearchButtonClicked() }
-//        ) {
-//            Text(stringResource(R.string.page_search_name))
-//        }
-//        OutlinedButton(
-//            modifier = Modifier.fillMaxWidth(),
-//            onClick = { onSignOutButtonClicked() }
-//        ) {
-//            Text(stringResource(R.string.button_signout))
-//        }
     }
 }
 
+@Composable
+private fun Card_PickupDropoff(
+    location: String,
+    datetime: String
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .padding(5.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 20.dp)
+        ) {
+            Icon(
+                imageVector =  Icons.Rounded.LocationOn,
+                contentDescription = "Location",
+                modifier = Modifier.fillMaxHeight().width(30.dp)
+            )
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(start = 10.dp)
+            ) {
+                Text(
+                    text = location,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = datetime,
+                    color = MaterialTheme.colorScheme.surfaceTint
+                )
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true, heightDp = 800)
 @Composable
