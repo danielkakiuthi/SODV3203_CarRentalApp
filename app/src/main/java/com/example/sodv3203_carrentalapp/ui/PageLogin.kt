@@ -1,5 +1,7 @@
 package com.example.sodv3203_carrentalapp.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,16 +9,17 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -45,20 +47,20 @@ import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 @Composable
 fun DisplayPageLogin(
     appUiState: AppUiState,
-    viewModel: AppViewModel,
     modifier: Modifier = Modifier,
     onSignUpButtonClicked: () -> Unit = {},
-    onLoginButtonClicked: (username: String, password: String) -> Unit
+    onLoginButtonClicked: (username: String, password: String) -> Unit = { _, _ -> }
 ) {
     var username: String by remember{mutableStateOf("")}
     var password: String by remember{mutableStateOf("")}
 
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .padding(horizontal = 26.dp, vertical = 70.dp),
+            .padding(horizontal = 26.dp, vertical = 70.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -85,16 +87,15 @@ fun DisplayPageLogin(
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Person, contentDescription = "Username")
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-            ,
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
         )
 
         OutlinedTextField(
@@ -110,16 +111,16 @@ fun DisplayPageLogin(
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Lock, contentDescription = "Password")
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Go
             ),
             keyboardActions = KeyboardActions(
                 onGo = { onLoginButtonClicked(username, password) }
-            )
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
         )
         
         Button(
@@ -148,6 +149,7 @@ fun DisplayPageLogin(
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageLoginPreview() {
@@ -155,13 +157,10 @@ fun DisplayPageLoginPreview() {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .fillMaxWidth(),
-            color = MaterialTheme.colorScheme.background
+                .fillMaxWidth()
         ) {
             DisplayPageLogin(
-                appUiState = AppUiState(),
-                viewModel = AppViewModel(),
-                onLoginButtonClicked = { username, password ->  }
+                appUiState = AppUiState()
             )
         }
     }

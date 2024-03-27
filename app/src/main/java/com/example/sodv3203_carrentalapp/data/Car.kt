@@ -4,10 +4,11 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
 data class Car(
+    val id: Int,
     @DrawableRes val imageResourceId: Int,
-    @StringRes val name: Int,
-    @StringRes val feature: Int,
-    @StringRes val category: Int,
+    val name: String,
+    val feature: String,
+    val category: String,
     val seat: Int,
     val bags: Int,
     val doors: Int,

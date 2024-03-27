@@ -1,5 +1,7 @@
 package com.example.sodv3203_carrentalapp.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -25,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,10 +47,11 @@ fun DisplayPageSearch(
 ) {
 
     val carsList: List<Car> = appUiState.listAllRegisteredCars
-    val selectedCar: Car = appUiState.selectedCar ?: carsList[0]
+    val selectedCar: Car = appUiState.selectedCar ?: appUiState.placeholderCar
 
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .padding(20.dp),
     ) {
         Row {
             Image(
@@ -56,10 +60,10 @@ fun DisplayPageSearch(
                 modifier = Modifier
                     .clickable { onBackButtonClicked() }
                     .size(26.dp)
+                    .verticalScroll(rememberScrollState()),
             )
         }
         Image(
-//            contentScale = ContentScale.Fit,
             painter = painterResource(id = selectedCar.imageResourceId ?: R.drawable.seach_demo),
             contentDescription =  null,
             modifier = Modifier
@@ -181,7 +185,7 @@ fun DisplayPageSearch(
                         fontWeight = FontWeight.Bold,
                         )
                     Text(
-                        text = stringResource( selectedCar.category ),
+                        text = selectedCar.category,
                         color = MaterialTheme.colorScheme.surfaceTint
                     )
                 }
@@ -205,7 +209,7 @@ fun DisplayPageSearch(
                         fontWeight = FontWeight.Bold,
                         )
                     Text(
-                        text = stringResource( selectedCar.feature),
+                        text = selectedCar.feature,
                         color = MaterialTheme.colorScheme.surfaceTint
                     )
                 }
@@ -221,18 +225,15 @@ fun DisplayPageSearch(
             )
         Column {
             Row (
-//                horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(24.dp)
-//                    .padding(bottom = 4.dp)
             ){
                 Text(text = "Pay at pickup")
                 Spacer(Modifier.width(210.dp))
                 Image(
                     painter = painterResource(id = R.drawable.credit)  ,
                     contentDescription = null,
-//                    Modifier.size(40.dp)
                 )
             }
             Row (
@@ -246,8 +247,6 @@ fun DisplayPageSearch(
                 Image(
                     painter = painterResource(id = R.drawable.cancel),
                     contentDescription = null,
-//                    modifier = Modifier
-//                        .width(80.dp)
                 )
             }
         }
@@ -266,39 +265,17 @@ fun DisplayPageSearch(
                 }
             }
         }
-
-
-//        Row(
-//            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
-//        ) {
-//            Column(
-//                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
-//            ) {
-//                Button(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    onClick = { onSelectButtonClicked() }
-//                ) {
-//                    Text(stringResource(R.string.button_next))
-//                }
-//                OutlinedButton(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    onClick = { onBackButtonClicked() }
-//                ) {
-//                    Text(stringResource(R.string.button_back))
-//                }
-//            }
-//        }
     }
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageSearchPreview() {
     SODV3203_CarRentalAppTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier.fillMaxSize()
         ) {
             DisplayPageSearch(
                 appUiState = AppUiState()

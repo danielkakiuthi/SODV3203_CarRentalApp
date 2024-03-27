@@ -1,18 +1,19 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.widget.Toast
-import androidx.compose.foundation.Image
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
@@ -22,33 +23,19 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerFormatter
-import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -58,35 +45,38 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.AppUiState
+import com.example.sodv3203_carrentalapp.data.User
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
 @Composable
 fun DisplayPageSignUp(
     appUiState: AppUiState,
-    viewModel: AppViewModel,
     modifier: Modifier = Modifier,
-    onRegisterUserButtonClicked: (username: String, password: String,
-                                  firstname: String, lastname: String,
-                                  birthdate: String, phone: String,
-                                  email: String) -> Unit,
+    onRegisterUserButtonClicked: (newUser: User) -> Unit = {},
     onCancelButtonClicked: () -> Unit = {}
 ) {
 
-    var username: String by remember{mutableStateOf("")}
-    var password: String by remember{mutableStateOf("")}
-    var firstname: String by remember{mutableStateOf("")}
-    var lastname: String by remember{mutableStateOf("")}
-    var birthdate: String by remember{mutableStateOf("")}
-    var phone: String by remember{mutableStateOf("")}
-    var email: String by remember{mutableStateOf("")}
+    val newId = appUiState.listAllUsers.last().id + 1
 
-    val context = LocalContext.current
+    val newUser: User = remember {
+        User(
+            id = newId,
+            username = "",
+            password = "",
+            firstName = "",
+            lastName = "",
+            birthDate = "",
+            phone = "",
+            email = ""
+        )
+    }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .padding(horizontal = 26.dp, vertical = 70.dp),
+            .padding(horizontal = 26.dp, vertical = 70.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -97,8 +87,8 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Username") },
-            value = username,
-            onValueChange = { username = it },
+            value = newUser.username,
+            onValueChange = { newUser.username = it },
             label = { Text(text = "Username")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -122,8 +112,8 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Password") },
-            value = password,
-            onValueChange = { password = it },
+            value = newUser.password,
+            onValueChange = { newUser.password = it },
             label = { Text(text = "Password")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -147,9 +137,9 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Firstname") },
-            value = firstname,
+            value = newUser.firstName,
             onValueChange = { validFirstName ->
-                firstname = validFirstName.filter { !it.isDigit() } },
+                newUser.firstName = validFirstName.filter { !it.isDigit() } },
             label = { Text(text = "Firstname")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -173,9 +163,9 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Lastname") },
-            value = lastname,
+            value = newUser.lastName,
             onValueChange = { validLastName ->
-                lastname = validLastName.filter { !it.isDigit() } },
+                newUser.lastName = validLastName.filter { !it.isDigit() } },
             label = { Text(text = "Lastname")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -199,8 +189,8 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Birthdate") },
-            value = birthdate,
-            onValueChange = { birthdate = it },
+            value = newUser.birthDate,
+            onValueChange = { newUser.birthDate = it },
             label = { Text(text = "Birthdate")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -224,8 +214,8 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Phone number") },
-            value = phone,
-            onValueChange = { if (it.isDigitsOnly()) phone = it },
+            value = newUser.phone,
+            onValueChange = { if (it.isDigitsOnly()) newUser.phone = it },
             label = { Text(text = "Phone number")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -248,8 +238,8 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Email") },
-            value = email,
-            onValueChange = { email = it },
+            value = newUser.email,
+            onValueChange = { newUser.email = it },
             label = { Text(text = "Email")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -267,8 +257,7 @@ fun DisplayPageSignUp(
                 imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
-                onGo = { onRegisterUserButtonClicked(username, password, firstname, lastname,
-                    birthdate, phone, email)}
+                onGo = { onRegisterUserButtonClicked(newUser) }
             )
         )
 
@@ -282,15 +271,7 @@ fun DisplayPageSignUp(
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = {
-                        if(username.isEmpty() or password.isEmpty() or firstname.isEmpty() or
-                            lastname.isEmpty() or birthdate.isEmpty() or phone.isEmpty() or
-                            email.isEmpty()){
-                            Toast.makeText(context, "All fields are required.", Toast.LENGTH_SHORT).show()
-                        }
-                        else {
-                            onRegisterUserButtonClicked(username, password, firstname, lastname,
-                                birthdate, phone, email)
-                        }
+                        onRegisterUserButtonClicked(newUser)
                     }
                 ) {
                     Text(stringResource(R.string.button_register_user), fontSize = 22.sp)
@@ -307,6 +288,7 @@ fun DisplayPageSignUp(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageSignUpPreview() {
@@ -314,13 +296,10 @@ fun DisplayPageSignUpPreview() {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .fillMaxWidth(),
-            color = MaterialTheme.colorScheme.background
+                .fillMaxWidth()
         ) {
             DisplayPageSignUp(
-                appUiState = AppUiState(),
-                viewModel = AppViewModel(),
-                onRegisterUserButtonClicked = { username, password, firstname, lastname, birthdate, phone, email ->  }
+                appUiState = AppUiState()
             )
         }
     }

@@ -1,32 +1,51 @@
 package com.example.sodv3203_carrentalapp
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.twotone.ExitToApp
+import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.sodv3203_carrentalapp.data.AppUiState
+import com.example.sodv3203_carrentalapp.data.User
 
 import com.example.sodv3203_carrentalapp.ui.AppViewModel
 import com.example.sodv3203_carrentalapp.ui.DisplayPageBooking
@@ -61,12 +80,12 @@ fun CarRentalAppBar(
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         title = { Text(stringResource(id = currentPage.title)) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        modifier = modifier,
+        modifier = modifier.padding(0.dp).height(30.dp),
         navigationIcon = {
             if (canNavigateBack) {
                 IconButton(onClick = navigateUp) {
@@ -81,6 +100,8 @@ fun CarRentalAppBar(
 }
 
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CarRentalApp(
     viewModel: AppViewModel = viewModel(),
@@ -89,29 +110,40 @@ fun CarRentalApp(
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentPage = PageTypes.valueOf(backStackEntry?.destination?.route ?: PageTypes.Login.name)
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
-//        topBar = {
-//            CarRentalAppBar(
-//                currentPage = currentPage,
-//                canNavigateBack = navController.previousBackStackEntry != null,
-//                navigateUp = { navController.navigateUp() }
-//            )
-//        }
+        topBar = {
+            if (uiState.isUserLoggedIn) {
+                Column {
+                    CarRentalAppBar(
+                        currentPage = currentPage,
+                        canNavigateBack = navController.previousBackStackEntry != null,
+                        navigateUp = { navController.navigateUp() }
+                    )
+                    TopHeaderLoggedIn(
+                        appUiState = uiState,
+                        onProfileButtonClicked = { navController.navigate(PageTypes.Profile.name) },
+                        onSignOutButtonClicked = {
+                            viewModel.signout()
+                            navController.navigate(PageTypes.Login.name)
+                        }
+                    )
+                }
+            }
+        }
     ) { innerPadding ->
-        val uiState by viewModel.uiState.collectAsState()
+
         NavHost(
             navController = navController,
             startDestination = PageTypes.Login.name,
             modifier = Modifier.padding(innerPadding)
         ) {
 
-
             composable(route = PageTypes.Login.name) {
                 val context = LocalContext.current.applicationContext
                 DisplayPageLogin(
                     appUiState = uiState,
-                    viewModel = viewModel,
                     onSignUpButtonClicked = { navController.navigate(PageTypes.SignUp.name) },
                     onLoginButtonClicked = { username, password ->
                         if (viewModel.authenticate(username, password)) {
@@ -131,10 +163,23 @@ fun CarRentalApp(
                 val context = LocalContext.current.applicationContext
                 DisplayPageSignUp(
                     appUiState = uiState,
-                    viewModel = viewModel,
-                    onRegisterUserButtonClicked = { username, password, firstname, lastname, birthdate, phone, email ->
-                        Toast.makeText(context, "Signup Successful", Toast.LENGTH_SHORT).show()
-                        navController.navigate(PageTypes.Landing.name)
+                    onRegisterUserButtonClicked = { newUser ->
+                        if(
+                            newUser.username.isEmpty() or
+                            newUser.password.isEmpty() or
+                            newUser.firstName.isEmpty() or
+                            newUser.lastName.isEmpty() or
+                            newUser.birthDate.isEmpty() or
+                            newUser.phone.isEmpty() or
+                            newUser.email.isEmpty()
+                        ){
+                            Toast.makeText(context, "All fields are required.", Toast.LENGTH_SHORT).show()
+                        }
+                        else {
+                            Toast.makeText(context, "Signup Successful", Toast.LENGTH_SHORT).show()
+                            viewModel.addUserInDatabase(newUser)
+                            navController.navigate(PageTypes.Login.name)
+                        }
                     },
                     onCancelButtonClicked = { navController.navigate(PageTypes.Login.name) },
                     modifier = Modifier
@@ -166,10 +211,23 @@ fun CarRentalApp(
                 val context = LocalContext.current.applicationContext
                 DisplayPageProfile(
                     appUiState = uiState,
-                    viewModel = viewModel,
-                    onUpdateButtonClicked = { username, password, firstname, lastname, birthdate, phone, email ->
-                        Toast.makeText(context, "Update Successful", Toast.LENGTH_SHORT).show()
-                        navController.navigate(PageTypes.Profile.name)
+                    onUpdateButtonClicked = { currentLoggedUser ->
+                        if (
+                            currentLoggedUser.username.isEmpty() or
+                            currentLoggedUser.password.isEmpty() or
+                            currentLoggedUser.firstName.isEmpty() or
+                            currentLoggedUser.lastName.isEmpty() or
+                            currentLoggedUser.birthDate.isEmpty() or
+                            currentLoggedUser.phone.isEmpty() or
+                            currentLoggedUser.email.isEmpty()
+                        ) {
+                            Toast.makeText(context, "All fields are required.", Toast.LENGTH_SHORT).show()
+                        }
+                        else {
+                            Toast.makeText(context, "Update Successful", Toast.LENGTH_SHORT).show()
+                            viewModel.updateUserInDatabase(currentLoggedUser)
+                            navController.navigate(PageTypes.Landing.name)
+                        }
                     },
                     onCancelButtonClicked = { navController.navigate(PageTypes.Landing.name) },
                     modifier = Modifier
@@ -201,6 +259,10 @@ fun CarRentalApp(
                 DisplayPageHistory(
                     appUiState = uiState,
                     onBackButtonClicked = { navController.navigate(PageTypes.Landing.name) },
+                    onCardBookingClick = {reservation ->
+                         viewModel.updateSelectedReservation(reservation)
+                        navController.navigate(PageTypes.Booking.name)
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                 )
@@ -217,10 +279,25 @@ fun CarRentalApp(
             }
 
             composable(route = PageTypes.FinalReservationDetails.name) {
+                val context = LocalContext.current.applicationContext
                 DisplayPageFinalReservationDetails(
                     appUiState = uiState,
                     onBackButtonClicked = { navController.navigate(PageTypes.Search.name) },
-                    onConfirmButtonClicked = { navController.navigate(PageTypes.Summary.name) },
+                    onConfirmButtonClicked = {currentReservation ->
+                        if (
+                            currentReservation.location.isEmpty() or
+                            currentReservation.nameOnCard.isEmpty() or
+                            currentReservation.cardNumber.isEmpty() or
+                            currentReservation.cvc.isEmpty()
+                        ) {
+                            Toast.makeText(context, "All fields are required.", Toast.LENGTH_SHORT).show()
+                        }
+                        else {
+                            Toast.makeText(context, "Final Reservation Successful", Toast.LENGTH_SHORT).show()
+                            viewModel.addReservationInDatabase(currentReservation)
+                            navController.navigate(PageTypes.Summary.name)
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                 )
@@ -238,18 +315,50 @@ fun CarRentalApp(
         }
 
     }
-
 }
 
 
+@Composable
+fun TopHeaderLoggedIn(
+    appUiState: AppUiState,
+    onProfileButtonClicked: () -> Unit = {},
+    onSignOutButtonClicked: () -> Unit = {},
+) {
+    val currentLoggedUser: User = appUiState.loggedUser ?: appUiState.placeholderUser
+    Row (
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .padding(start = 15.dp, end = 15.dp, top = 14.dp, bottom = 15.dp)
+    ){
+        Image(
+            painter = painterResource(id = R.drawable.user),
+            contentDescription = "User",
+            modifier = Modifier
+                .clickable { onProfileButtonClicked() }
+        )
+        Text(text = "${currentLoggedUser.firstName} ${currentLoggedUser.lastName}", modifier=Modifier.padding(horizontal = 10.dp))
+        Spacer(modifier = Modifier.weight(1f))
+        Image(painter = painterResource(id = R.drawable.bell), contentDescription = "Notifications" )
+        Button(
+            onClick = onSignOutButtonClicked,
+            contentPadding = PaddingValues(1.dp)
+        ) {
+            Image(imageVector = Icons.TwoTone.ExitToApp, contentDescription = "Logout", modifier = Modifier.height(50.dp) )
+            Text(text = "Logout", fontSize = 13.sp)
+        }
+    }
+    Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(horizontal = 10.dp))
+}
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayCarRentalAppPreview() {
     SODV3203_CarRentalAppTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier.fillMaxSize()
         ) {
             CarRentalApp()
         }

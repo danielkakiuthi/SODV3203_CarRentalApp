@@ -70,6 +70,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.test:monitor:1.6.1")
     implementation("androidx.test.ext:junit-ktx:1.1.5")
+
     testImplementation("org.testng:testng:6.9.6")
     androidTestImplementation("org.testng:testng:6.9.6")
 

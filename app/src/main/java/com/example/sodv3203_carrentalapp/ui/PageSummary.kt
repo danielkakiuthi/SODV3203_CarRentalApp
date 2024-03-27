@@ -1,6 +1,9 @@
 package com.example.sodv3203_carrentalapp.ui
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
@@ -19,7 +24,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,8 +41,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.AppUiState
-import com.example.sodv3203_carrentalapp.data.Car
+import com.example.sodv3203_carrentalapp.data.Reservation
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
+import kotlin.math.abs
 
 @Composable
 fun DisplayPageSummary(
@@ -48,10 +54,14 @@ fun DisplayPageSummary(
 ) {
 
     val context = LocalContext.current.applicationContext
-    val carsList: List<Car> = appUiState.listAllRegisteredCars
+    val selectedReservation: Reservation = appUiState.selectedReservation ?: appUiState.placeholderReservation
+    val dayDifference = abs(selectedReservation.endDate.time - selectedReservation.startDate.time) / (24*60*60*1000)
+
 
     Column(
         modifier = modifier
+            .padding(10.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
             text = "Order Summary",
@@ -60,10 +70,23 @@ fun DisplayPageSummary(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-
+        Image(
+            painter = painterResource(id = selectedReservation.car.imageResourceId),
+            contentDescription = null,
+            modifier = Modifier
+                .height(100.dp)
+                .fillMaxWidth()
+                .padding(bottom = 0.dp)
+        )
         Column(modifier = Modifier.padding(10.dp)) {
-            Text(text = "Ford Focus or similar", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Text(text = "$51/day, 2 days")
+            Text(
+                text = selectedReservation.car.name,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "$${selectedReservation.pricePerDay}/day, ${dayDifference} days"
+            )
         }
 
         Column(modifier = Modifier.padding(10.dp)) {
@@ -74,23 +97,18 @@ fun DisplayPageSummary(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Card_Addons(title = "Audio system", information = stringResource(carsList[0].category))
-                Card_Addons(title = "Connectivity", information = stringResource(carsList[0].feature))
+                Card_Addons(title = "Category", information = selectedReservation.car.category)
+                Card_Addons(title = "Features", information = selectedReservation.car.feature)
             }
-            Row (
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Card_Addons(title = "Audio system", information = stringResource(carsList[0].category))
-                Card_Addons(title = "Connectivity", information = stringResource(carsList[0].feature))
-            }
+
         }
 
         Column(modifier = Modifier.padding(10.dp)) {
-            Text(text = "Pickup & Dropoff", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Card_PickupDropoff(location="Calgary", datetime="Fri, Jan 6, 12:00PM")
+            Text(text = "Pickup & Drop-off", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Card_PickupDropoff(
+                location = selectedReservation.location,
+                datetime = selectedReservation.startDate.toString()
+            )
             Icon(
                 imageVector =  Icons.Filled.MoreVert,
                 contentDescription = "Location"
@@ -99,7 +117,10 @@ fun DisplayPageSummary(
                 imageVector =  Icons.Filled.KeyboardArrowDown,
                 contentDescription = "Location"
             )
-            Card_PickupDropoff(location="Edmonton", datetime="Sun, Jan 8, 12:00PM")
+            Card_PickupDropoff(
+                location = selectedReservation.location,
+                datetime = selectedReservation.endDate.toString()
+            )
         }
 
         Row(
@@ -117,12 +138,12 @@ fun DisplayPageSummary(
                 ) {
                     Text(stringResource(R.string.button_send))
                 }
-                OutlinedButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onBackButtonClicked() }
-                ) {
-                    Text(stringResource(R.string.button_back))
-                }
+//                OutlinedButton(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    onClick = { onBackButtonClicked() }
+//                ) {
+//                    Text(stringResource(R.string.button_back))
+//                }
             }
         }
     }
@@ -130,7 +151,7 @@ fun DisplayPageSummary(
 
 
 @Composable
-private fun Card_Addons(
+fun Card_Addons(
     title: String,
     information: String
 ) {
@@ -138,16 +159,15 @@ private fun Card_Addons(
         modifier = Modifier
             .width(160.dp)
             .height(80.dp)
-            .clip(RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(40.dp))
             .padding(vertical = 5.dp)
     ) {
         Column(
-            horizontalAlignment = Alignment.Start,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(start = 16.dp)
         ) {
             Text(
                 text = title,
@@ -204,13 +224,13 @@ private fun Card_PickupDropoff(
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageSummaryPreview() {
     SODV3203_CarRentalAppTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier.fillMaxSize()
         ) {
             DisplayPageSummary(
                 appUiState = AppUiState()

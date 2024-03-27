@@ -1,6 +1,7 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.widget.Toast
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,9 +9,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
@@ -21,22 +24,15 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -48,34 +44,25 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.AppUiState
+import com.example.sodv3203_carrentalapp.data.User
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
 @Composable
 fun DisplayPageProfile(
     appUiState: AppUiState,
-    viewModel: AppViewModel,
     modifier: Modifier = Modifier,
-    onUpdateButtonClicked: (username: String, password: String,
-                            firstname: String, lastname: String,
-                            birthdate: String, phone: String,
-                            email: String) -> Unit,
+    onUpdateButtonClicked: (currentLoggedUser: User) -> Unit = {},
     onCancelButtonClicked: () -> Unit = {}
 ) {
-    var username: String by remember{mutableStateOf("")}
-    var password: String by remember{mutableStateOf("")}
-    var firstname: String by remember{mutableStateOf("")}
-    var lastname: String by remember{mutableStateOf("")}
-    var birthdate: String by remember{mutableStateOf("")}
-    var phone: String by remember{mutableStateOf("")}
-    var email: String by remember{mutableStateOf("")}
 
-    val context = LocalContext.current
+    var currentLoggedUser: User = appUiState.loggedUser ?: appUiState.placeholderUser
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .padding(horizontal = 26.dp, vertical = 70.dp),
+            .padding(horizontal = 26.dp, vertical = 70.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -86,8 +73,8 @@ fun DisplayPageProfile(
 
         OutlinedTextField(
             placeholder = { Text(text = "Usernames") },
-            value = username,
-            onValueChange = { username = it },
+            value = currentLoggedUser.username,
+            onValueChange = { currentLoggedUser.username = it },
             label = { Text(text = "Username")},
             enabled = false,
             shape = RoundedCornerShape(20.dp),
@@ -112,8 +99,8 @@ fun DisplayPageProfile(
 
         OutlinedTextField(
             placeholder = { Text(text = "Password") },
-            value = password,
-            onValueChange = { password = it },
+            value = currentLoggedUser.password,
+            onValueChange = { currentLoggedUser.password = it },
             label = { Text(text = "Password")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -137,9 +124,9 @@ fun DisplayPageProfile(
 
         OutlinedTextField(
             placeholder = { Text(text = "Firstname") },
-            value = firstname,
+            value = currentLoggedUser.firstName,
             onValueChange = { validFirstName ->
-                firstname = validFirstName.filter { !it.isDigit() } },
+                currentLoggedUser.firstName = validFirstName.filter { !it.isDigit() } },
             label = { Text(text = "Firstname")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -163,9 +150,9 @@ fun DisplayPageProfile(
 
         OutlinedTextField(
             placeholder = { Text(text = "Lastname") },
-            value = lastname,
+            value = currentLoggedUser.lastName,
             onValueChange = { validLastName ->
-                lastname = validLastName.filter { !it.isDigit() } },
+                currentLoggedUser.lastName = validLastName.filter { !it.isDigit() } },
             label = { Text(text = "Lastname")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -189,8 +176,8 @@ fun DisplayPageProfile(
 
         OutlinedTextField(
             placeholder = { Text(text = "Birthdate") },
-            value = birthdate,
-            onValueChange = { birthdate = it },
+            value = currentLoggedUser.birthDate,
+            onValueChange = { currentLoggedUser.birthDate = it },
             label = { Text(text = "Birthdate")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -214,8 +201,8 @@ fun DisplayPageProfile(
 
         OutlinedTextField(
             placeholder = { Text(text = "Phone number") },
-            value = phone,
-            onValueChange = { if (it.isDigitsOnly()) phone = it },
+            value = currentLoggedUser.phone,
+            onValueChange = { if (it.isDigitsOnly()) currentLoggedUser.phone = it },
             label = { Text(text = "Phone number")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -238,8 +225,8 @@ fun DisplayPageProfile(
 
         OutlinedTextField(
             placeholder = { Text(text = "Email") },
-            value = email,
-            onValueChange = { email = it },
+            value = currentLoggedUser.email,
+            onValueChange = { currentLoggedUser.email = it },
             label = { Text(text = "Email")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -254,12 +241,11 @@ fun DisplayPageProfile(
                 .padding(bottom = 8.dp)
             ,
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Go
             ),
             keyboardActions = KeyboardActions(
 //                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                onGo = { onUpdateButtonClicked(username, password, firstname, lastname,
-                    birthdate, phone, email)}
+                onGo = { onUpdateButtonClicked(currentLoggedUser)}
             )
         )
 
@@ -272,17 +258,7 @@ fun DisplayPageProfile(
                 Button(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    onClick = {
-                        if(username.isEmpty() or password.isEmpty() or firstname.isEmpty() or
-                            lastname.isEmpty() or birthdate.isEmpty() or phone.isEmpty() or
-                            email.isEmpty()){
-                            Toast.makeText(context, "All fields are required.", Toast.LENGTH_SHORT).show()
-                        }
-                        else {
-                            onUpdateButtonClicked(username, password, firstname, lastname,
-                                birthdate, phone, email)
-                        }
-                    }
+                    onClick = { onUpdateButtonClicked(currentLoggedUser) }
                 ) {
                     Text(stringResource(R.string.button_update_user), fontSize = 22.sp)
                 }
@@ -299,6 +275,7 @@ fun DisplayPageProfile(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageProfilePreview() {
@@ -306,13 +283,10 @@ fun DisplayPageProfilePreview() {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .fillMaxWidth(),
-            color = MaterialTheme.colorScheme.background
+                .fillMaxWidth()
         ) {
             DisplayPageProfile(
-                appUiState = AppUiState(),
-                viewModel = AppViewModel(),
-                onUpdateButtonClicked = { username, password, firstname, lastname, birthdate, phone, email ->  }
+                appUiState = AppUiState()
             )
         }
     }

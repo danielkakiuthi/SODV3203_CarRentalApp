@@ -1,5 +1,7 @@
 package com.example.sodv3203_carrentalapp.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +13,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
@@ -27,7 +28,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,22 +42,42 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.AppUiState
+import com.example.sodv3203_carrentalapp.data.Reservation
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
+import java.util.Date
+
 
 @Composable
 fun DisplayPageFinalReservationDetails(
     appUiState: AppUiState,
     modifier: Modifier = Modifier,
     onBackButtonClicked: () -> Unit = {},
-    onConfirmButtonClicked: () -> Unit = {}
+    onConfirmButtonClicked: (Reservation) -> Unit = {}
 ) {
 
+    val datePickerStateStart = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+    val datePickerStateEnd = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+    val focusManager = LocalFocusManager.current
 
-    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+
+    var currentReservation: Reservation = remember{Reservation(
+        id = appUiState.listAllReservations.last().id + 1,
+        user = appUiState.loggedUser ?: appUiState.placeholderUser,
+        car = appUiState.selectedCar ?: appUiState.placeholderCar,
+        location = "",
+        startDate = Date(datePickerStateStart.selectedDateMillis?:0),
+        endDate = Date(datePickerStateEnd.selectedDateMillis?:0),
+        pricePerDay = 50f,
+        additionalRequests = "",
+        nameOnCard = "",
+        cardNumber = "",
+        cvc = ""
+    )}
 
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
+            .padding(15.dp)
     ) {
 
         Column {
@@ -62,11 +86,12 @@ fun DisplayPageFinalReservationDetails(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
             )
             OutlinedTextField(
                 placeholder = { Text("123 Ave SW") },
-                value = "",
+                value = currentReservation.location,
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -77,30 +102,30 @@ fun DisplayPageFinalReservationDetails(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                onValueChange = {},
+                onValueChange = { currentReservation.location=it },
                 label = {
                     Text("Pickup Location")
                 },
                 isError = false,
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = {  }
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
                 ),
                 trailingIcon = {
                     Icon(imageVector = Icons.Filled.LocationOn, contentDescription = "From Date")
                 }
             )
             DatePicker(
-                state = datePickerState,
+                state = datePickerStateStart,
                 modifier = Modifier.padding(horizontal = 16.dp),
                 title = {
                     Text("From Date")
                 },
                 headline = {
                     DatePickerDefaults.DatePickerHeadline(
-                        state = datePickerState,
+                        state = datePickerStateStart,
                         dateFormatter = DatePickerFormatter(),
                         modifier = Modifier.padding(0.dp)
                     )
@@ -108,14 +133,14 @@ fun DisplayPageFinalReservationDetails(
             )
 
             DatePicker(
-                state = datePickerState,
+                state = datePickerStateEnd,
                 modifier = Modifier.padding(horizontal = 16.dp),
                 title = {
                     Text("To Date")
                 },
                 headline = {
                     DatePickerDefaults.DatePickerHeadline(
-                        state = datePickerState,
+                        state = datePickerStateEnd,
                         dateFormatter = DatePickerFormatter(),
                         modifier = Modifier.padding(0.dp)
                     )
@@ -124,10 +149,10 @@ fun DisplayPageFinalReservationDetails(
         }
 
         Column {
-            Text(text = "Aditional Requests", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Additional Requests", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             OutlinedTextField(
                 placeholder = { Text("Eg. car model, color, etc") },
-                value = "",
+                value = currentReservation.additionalRequests,
                 singleLine = false,
                 minLines = 4,
                 maxLines = 4,
@@ -140,16 +165,16 @@ fun DisplayPageFinalReservationDetails(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                onValueChange = {},
+                onValueChange = { currentReservation.additionalRequests=it },
                 label = {
-                    Text("Aditional Requests")
+                    Text("Additional Requests")
                 },
                 isError = false,
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { }
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
                 )
             )
         }
@@ -159,7 +184,7 @@ fun DisplayPageFinalReservationDetails(
             Text(text = "Payment", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             OutlinedTextField(
                 placeholder = { Text("John Doe") },
-                value = "",
+                value = currentReservation.nameOnCard,
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -170,21 +195,21 @@ fun DisplayPageFinalReservationDetails(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                onValueChange = {},
+                onValueChange = { currentReservation.nameOnCard=it },
                 label = {
                     Text("Name on Card")
                 },
                 isError = false,
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { }
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
                 )
             )
             OutlinedTextField(
                 placeholder = { Text("1111 2222 3333 4444") },
-                value = "",
+                value = currentReservation.cardNumber,
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -195,21 +220,21 @@ fun DisplayPageFinalReservationDetails(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                onValueChange = {},
+                onValueChange = { currentReservation.cardNumber=it },
                 label = {
                     Text("Card Number")
                 },
                 isError = false,
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { }
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
                 )
             )
             OutlinedTextField(
                 placeholder = { Text("123") },
-                value = "",
+                value = currentReservation.cvc,
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -220,7 +245,7 @@ fun DisplayPageFinalReservationDetails(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                onValueChange = {},
+                onValueChange = { currentReservation.cvc=it },
                 label = {
                     Text("CVC")
                 },
@@ -229,7 +254,7 @@ fun DisplayPageFinalReservationDetails(
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { }
+                    onDone = { onConfirmButtonClicked(currentReservation) }
                 )
             )
         }
@@ -244,7 +269,7 @@ fun DisplayPageFinalReservationDetails(
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { onConfirmButtonClicked() }
+                    onClick = { onConfirmButtonClicked(currentReservation) }
                 ) {
                     Text(stringResource(R.string.button_complete_reservation))
                 }
@@ -260,13 +285,13 @@ fun DisplayPageFinalReservationDetails(
 }
 
 
-@Preview(showBackground = true, heightDp = 800)
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true, heightDp = 1800)
 @Composable
 fun DisplayPageFinalReservationDetailsPreview() {
     SODV3203_CarRentalAppTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier.fillMaxSize()
         ) {
             DisplayPageFinalReservationDetails(
                 appUiState = AppUiState()
