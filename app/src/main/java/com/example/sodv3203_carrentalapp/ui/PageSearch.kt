@@ -51,17 +51,11 @@ fun DisplayPageSearch(
 
     Column(
         modifier = modifier
-            .padding(20.dp),
+            .padding(20.dp)
+
     ) {
-        Row {
-            Image(
-                painter = painterResource(id = R.drawable.back),
-                contentDescription = null,
-                modifier = Modifier
-                    .clickable { onBackButtonClicked() }
-                    .size(26.dp)
-                    .verticalScroll(rememberScrollState()),
-            )
+        Column(modifier=Modifier.verticalScroll(rememberScrollState())) {
+
         }
         Image(
             painter = painterResource(id = selectedCar.imageResourceId ?: R.drawable.seach_demo),
@@ -216,14 +210,15 @@ fun DisplayPageSearch(
             }
         }
 
-        Text(
-            text = "Rental terms",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(top = 8.dp , bottom = 8.dp)
-            )
+
         Column {
+            Text(
+                text = "Rental terms",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(top = 8.dp , bottom = 8.dp)
+            )
             Row (
                 modifier = Modifier
                     .fillMaxWidth()

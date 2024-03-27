@@ -295,6 +295,7 @@ fun CarRentalApp(
                         else {
                             Toast.makeText(context, "Final Reservation Successful", Toast.LENGTH_SHORT).show()
                             viewModel.addReservationInDatabase(currentReservation)
+                            viewModel.updateSelectedReservation(currentReservation)
                             navController.navigate(PageTypes.Summary.name)
                         }
                     },
