@@ -47,12 +47,11 @@ import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 fun DisplayPageLanding(
     appUiState: AppUiState,
     modifier: Modifier = Modifier,
-    onSignOutButtonClicked: () -> Unit = {},
-    onLandingButtonClicked: () -> Unit = {},
-    onProfileButtonClicked: () -> Unit = {},
-    onBookingButtonClicked: () -> Unit = {},
-    onHistoryButtonClicked: () -> Unit = {},
-    onSearchButtonClicked: (Car) -> Unit = {}
+    onLandingButtonClicked: () -> Unit,
+    onProfileButtonClicked: () -> Unit,
+    onHistoryButtonClicked: () -> Unit,
+    onSearchButtonClicked: (Car) -> Unit,
+    onAddNewCarButtonClicked: () -> Unit,
 ) {
 
     val carsList: List<Car> = appUiState.listAllRegisteredCars
@@ -112,6 +111,7 @@ fun DisplayPageLanding(
             onLandingButtonClicked = onLandingButtonClicked,
             onProfileButtonClicked = onProfileButtonClicked,
             onHistoryButtonClicked = onHistoryButtonClicked,
+            onAddNewCarButtonClicked = onAddNewCarButtonClicked,
         )
 
     }
@@ -141,6 +141,7 @@ fun BottomNavigationBar(
     onLandingButtonClicked: () -> Unit,
     onProfileButtonClicked: () -> Unit,
     onHistoryButtonClicked: () -> Unit,
+    onAddNewCarButtonClicked: () -> Unit,
 ) {
     Row (
         verticalAlignment = Alignment.CenterVertically,
@@ -151,32 +152,33 @@ fun BottomNavigationBar(
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(vertical = 20.dp)
     ){
-        PlainTooltipBox(
-            tooltip = { Text("Add to favorites" ) },
-            contentColor = White
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = null,
-                modifier = Modifier
-                    .clickable { onLandingButtonClicked() }
-                    .height(25.dp)
-                    .tooltipAnchor()
-            )
-        }
+        Image(
+            painter = painterResource(id = R.drawable.home),
+            contentDescription = null,
+            modifier = Modifier
+                .clickable { onLandingButtonClicked() }
+                .fillMaxHeight()
+        )
         Image(
             painter = painterResource(id = R.drawable.profile),
             contentDescription = null,
             modifier = Modifier
                 .clickable { onProfileButtonClicked() }
-                .height(25.dp)
+                .fillMaxHeight()
         )
         Image(
             painter = painterResource(id = R.drawable.history),
             contentDescription = null,
             modifier = Modifier
                 .clickable { onHistoryButtonClicked() }
-                .height(25.dp)
+                .fillMaxHeight()
+        )
+        Image(
+            painter = painterResource(id = R.drawable.icon_addcar),
+            contentDescription = null,
+            modifier = Modifier
+                .clickable { onAddNewCarButtonClicked() }
+                .fillMaxHeight()
         )
     }
 }
@@ -192,7 +194,11 @@ fun DisplayPageLandingPreview() {
         ) {
             DisplayPageLanding(
                 appUiState = AppUiState(),
-                onSearchButtonClicked = {}
+                onLandingButtonClicked = {},
+                onProfileButtonClicked = {},
+                onHistoryButtonClicked = {},
+                onSearchButtonClicked = {},
+                onAddNewCarButtonClicked = {},
             )
         }
     }

@@ -34,7 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.data.AppUiState
-import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 import kotlin.math.abs
@@ -43,14 +42,10 @@ import kotlin.math.abs
 fun DisplayPageBooking(
     appUiState: AppUiState,
     modifier: Modifier = Modifier,
-    onBackButtonClicked: () -> Unit = {},
-    onSignOutButtonClicked: () -> Unit = {},
-    onLandingButtonClicked: () -> Unit = {},
-    onProfileButtonClicked: () -> Unit = {},
-    onBookingButtonClicked: () -> Unit = {},
-    onHistoryButtonClicked: () -> Unit = {},
-    onSearchButtonClicked: (Car) -> Unit = {}
-
+    onLandingButtonClicked: () -> Unit,
+    onProfileButtonClicked: () -> Unit,
+    onHistoryButtonClicked: () -> Unit,
+    onAddNewCarButtonClicked: () -> Unit
 ) {
     val selectedReservation: Reservation = appUiState.selectedReservation ?: appUiState.placeholderReservation
     val dayDifference = abs(selectedReservation.endDate.time - selectedReservation.startDate.time) / (24*60*60*1000)
@@ -233,7 +228,8 @@ fun DisplayPageBooking(
         BottomNavigationBar(
             onLandingButtonClicked = onLandingButtonClicked,
             onProfileButtonClicked = onProfileButtonClicked,
-            onHistoryButtonClicked = onHistoryButtonClicked
+            onHistoryButtonClicked = onHistoryButtonClicked,
+            onAddNewCarButtonClicked = onAddNewCarButtonClicked
         )
 
     }
@@ -295,7 +291,11 @@ fun DisplayPageBookingPreview() {
             modifier = Modifier.fillMaxSize()
         ) {
             DisplayPageBooking(
-                appUiState = AppUiState()
+                appUiState = AppUiState(),
+                onLandingButtonClicked = {},
+                onProfileButtonClicked = {},
+                onHistoryButtonClicked = {},
+                onAddNewCarButtonClicked = {}
             )
         }
     }

@@ -48,6 +48,7 @@ import com.example.sodv3203_carrentalapp.data.AppUiState
 import com.example.sodv3203_carrentalapp.data.User
 
 import com.example.sodv3203_carrentalapp.ui.AppViewModel
+import com.example.sodv3203_carrentalapp.ui.DisplayPageAddCar
 import com.example.sodv3203_carrentalapp.ui.DisplayPageBooking
 import com.example.sodv3203_carrentalapp.ui.DisplayPageFinalReservationDetails
 import com.example.sodv3203_carrentalapp.ui.DisplayPageHistory
@@ -65,6 +66,7 @@ enum class PageTypes(@StringRes val title: Int) {
     SignUp(title = R.string.page_signup_name),
     Landing(title = R.string.page_landing_name),
     Profile(title = R.string.page_profile_name),
+    AddNewCar(title = R.string.page_add_new_car),
     Booking(title = R.string.page_booking_name),
     History(title = R.string.page_history_name),
     Search(title = R.string.page_search_name),
@@ -190,18 +192,14 @@ fun CarRentalApp(
             composable(route = PageTypes.Landing.name) {
                 DisplayPageLanding(
                     appUiState = uiState,
-                    onSignOutButtonClicked = {
-                        viewModel.signout()
-                        navController.navigate(PageTypes.Login.name)
-                    },
                     onLandingButtonClicked = { navController.navigate(PageTypes.Landing.name) },
                     onProfileButtonClicked = { navController.navigate(PageTypes.Profile.name) },
-                    onBookingButtonClicked = { navController.navigate(PageTypes.Booking.name) },
                     onHistoryButtonClicked = { navController.navigate(PageTypes.History.name) },
                     onSearchButtonClicked = {
                         viewModel.updateSelectedCar(it)
                         navController.navigate(PageTypes.Search.name)
                     },
+                    onAddNewCarButtonClicked = { navController.navigate(PageTypes.AddNewCar.name) },
                     modifier = Modifier
                         .fillMaxSize()
                     )
@@ -235,21 +233,37 @@ fun CarRentalApp(
                 )
             }
 
+            composable(route = PageTypes.AddNewCar.name) {
+                val context = LocalContext.current.applicationContext
+                DisplayPageAddCar(
+                    appUiState = uiState,
+                    onAddNewCarButtonClicked = { newCar ->
+                        if(
+                            newCar.name.isEmpty() or
+                            newCar.feature.isEmpty() or
+                            newCar.category.isEmpty()
+                        ){
+                            Toast.makeText(context, "All fields are required.", Toast.LENGTH_SHORT).show()
+                        }
+                        else {
+                            Toast.makeText(context, "Car added Successfully", Toast.LENGTH_SHORT).show()
+                            viewModel.addCarInDatabase(newCar)
+                            navController.navigate(PageTypes.Landing.name)
+                        }
+                    },
+                    onCancelButtonClicked = { navController.navigate(PageTypes.Landing.name) },
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
+
             composable(route = PageTypes.Booking.name) {
                 DisplayPageBooking(
                     appUiState = uiState,
-                    onSignOutButtonClicked = {
-                        viewModel.signout()
-                        navController.navigate(PageTypes.Login.name)
-                    },
                     onLandingButtonClicked = { navController.navigate(PageTypes.Landing.name) },
                     onProfileButtonClicked = { navController.navigate(PageTypes.Profile.name) },
-                    onBookingButtonClicked = { navController.navigate(PageTypes.Booking.name) },
                     onHistoryButtonClicked = { navController.navigate(PageTypes.History.name) },
-                    onSearchButtonClicked = {
-                        viewModel.updateSelectedCar(it)
-                        navController.navigate(PageTypes.Search.name)
-                    },
+                    onAddNewCarButtonClicked = { navController.navigate(PageTypes.AddNewCar.name) },
                     modifier = Modifier
                         .fillMaxSize()
                 )
