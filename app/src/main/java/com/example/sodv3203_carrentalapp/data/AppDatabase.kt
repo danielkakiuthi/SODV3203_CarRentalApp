@@ -4,7 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import java.text.Format
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Database(entities = [User::class, Car::class, Reservation::class], version = 1, exportSchema = false)
 @TypeConverters(DateConverter::class)
@@ -27,5 +32,21 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
     }
+}
 
+
+class DateConverter {
+    @TypeConverter
+    fun dateToString(dateInput: Date) : String {
+        val formatter: Format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+        val s: String = formatter.format(dateInput)
+        return s
+    }
+
+    @TypeConverter
+    fun stringToDate(stringInput: String) : Date? {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        val date: Date? = formatter.parse(stringInput);
+        return date
+    }
 }

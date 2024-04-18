@@ -48,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.example.sodv3203_carrentalapp.R
-import com.example.sodv3203_carrentalapp.data.AppUiState
 import com.example.sodv3203_carrentalapp.data.User
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 

@@ -23,19 +23,3 @@ data class Reservation(
     var cardNumber: String,
     var cvc: String
 )
-
-class DateConverter {
-    @TypeConverter
-    fun dateToString(dateInput: Date) : String {
-        val formatter: Format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-        val s: String = formatter.format(dateInput)
-        return s
-    }
-
-    @TypeConverter
-    fun stringToDate(stringInput: String) : Date? {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-        val date: Date? = formatter.parse(stringInput);
-        return date
-    }
-}

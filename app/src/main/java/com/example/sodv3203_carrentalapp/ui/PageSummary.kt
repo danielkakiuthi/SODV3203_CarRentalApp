@@ -41,7 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.R
-import com.example.sodv3203_carrentalapp.data.AppUiState
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme

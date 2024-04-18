@@ -4,7 +4,6 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
-import com.example.sodv3203_carrentalapp.data.AppUiState
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
 import com.example.sodv3203_carrentalapp.data.User

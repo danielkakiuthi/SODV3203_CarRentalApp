@@ -44,7 +44,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.sodv3203_carrentalapp.data.AppUiState
+import com.example.sodv3203_carrentalapp.ui.AppUiState
 import com.example.sodv3203_carrentalapp.data.User
 
 import com.example.sodv3203_carrentalapp.ui.AppViewModel
