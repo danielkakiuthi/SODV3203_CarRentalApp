@@ -58,7 +58,6 @@ fun DisplayPageSignUp(
     onCancelButtonClicked: () -> Unit
 ) {
 
-    //val newId by remember { mutableIntStateOf(appUiState.listAllUsers.last().id + 1) }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }

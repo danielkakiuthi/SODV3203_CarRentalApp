@@ -40,14 +40,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.sodv3203_carrentalapp.ui.AppUiState
 import com.example.sodv3203_carrentalapp.data.User
-
+import com.example.sodv3203_carrentalapp.ui.AppUiState
 import com.example.sodv3203_carrentalapp.ui.AppViewModel
 import com.example.sodv3203_carrentalapp.ui.AppViewModelProvider
 import com.example.sodv3203_carrentalapp.ui.DisplayPageAddCar
@@ -181,11 +180,11 @@ fun CarRentalApp(
                             newUser.phone.isEmpty() or
                             newUser.email.isEmpty()
                         ){
-                            Toast.makeText(context, "All fields are required.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "[ERROR] New User not added to database. Verify user fields.", Toast.LENGTH_SHORT).show()
                         }
                         else {
                             coroutineScope.launch {
-                                Toast.makeText(context, "Signup Successful", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Adding new user to database...", Toast.LENGTH_SHORT).show()
                                 viewModel.addUserInDatabase(newUser)
                                 navController.navigate(PageTypes.Login.name)
                             }
@@ -243,6 +242,7 @@ fun CarRentalApp(
 
             composable(route = PageTypes.AddNewCar.name) {
                 val context = LocalContext.current.applicationContext
+                val coroutineScope = rememberCoroutineScope()
                 DisplayPageAddCar(
                     appUiState = uiState,
                     onAddNewCarButtonClicked = { newCar ->
@@ -251,12 +251,14 @@ fun CarRentalApp(
                             newCar.feature.isEmpty() or
                             newCar.category.isEmpty()
                         ){
-                            Toast.makeText(context, "All fields are required.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "[ERROR] New Car not added to database. Verify car fields.", Toast.LENGTH_SHORT).show()
                         }
                         else {
-                            Toast.makeText(context, "Car added Successfully", Toast.LENGTH_SHORT).show()
-                            viewModel.addCarInDatabase(newCar)
-                            navController.navigate(PageTypes.Landing.name)
+                            coroutineScope.launch {
+                                Toast.makeText(context, "Adding new car to database...", Toast.LENGTH_SHORT).show()
+                                viewModel.addCarInDatabase(newCar)
+                                navController.navigate(PageTypes.Landing.name)
+                            }
                         }
                     },
                     onCancelButtonClicked = { navController.navigate(PageTypes.Landing.name) },

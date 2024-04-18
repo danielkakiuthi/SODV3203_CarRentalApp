@@ -65,16 +65,9 @@ class AppViewModel(
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addUserInDatabase(newUser: User) {
         Log.d("MyTag", "[ViewModel] addUserInDatabase is being called")
-
         if(validateInputNewUser(newUser)) {
             userRepository.insertUser(newUser)
-//            _uiState.update { currentState ->
-//                currentState.copy(
-//                    listAllUsers = _uiState.value.listAllUsers.plus(newUser)
-//                )
-//            }
-            Log.d("MyTag", "[addUserInDatabase] New User Successfully added to Database")
-            Log.d("MyTag", "newUser.Id added: ${newUser.id}")
+            Log.d("MyTag", "[addUserInDatabase] New User Successfully added to users Table")
             Log.d("MyTag", "newUser.username added: ${newUser.username}")
         }
         else {
@@ -101,6 +94,7 @@ class AppViewModel(
         updateLoggedUser(updateUser)
     }
 
+
     private fun validateInputNewUser(user: User) : Boolean {
         return with(user) {
             username.isNotBlank()
@@ -118,17 +112,18 @@ class AppViewModel(
     *  ------------------------------------- CARS -------------------------------------------------
     *  -------------------------------------------------------------------------------------------- */
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addCarInDatabase(newCar: Car) {
+    suspend fun addCarInDatabase(newCar: Car) {
         Log.d("MyTag", "[ViewModel] addCarInDatabase is being called")
-        _uiState.update { currentState ->
-            currentState.copy(
-                listAllRegisteredCars = _uiState.value.listAllRegisteredCars.plus(newCar)
-            )
+        if(validateInputNewCar(newCar)) {
+            carRepository.insertCar(newCar)
+            Log.d("MyTag", "[addCarInDatabase] New Car Successfully added to cars Table")
+            Log.d("MyTag", "newCar.name added: ${newCar.name}")
         }
-        Log.d("MyTag", "listAllRegisteredCars length: ${_uiState.value.listAllRegisteredCars.size}")
-        Log.d("MyTag", "newCar.Id added: ${_uiState.value.listAllRegisteredCars.last().id}")
-        Log.d("MyTag", "newCar.name added: ${_uiState.value.listAllRegisteredCars.last().name}")
+        else {
+            Log.d("MyTag", "[addCarInDatabase] Car not added to Database. Invalid Input for New Car.")
+        }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun updateSelectedCar(updateCar: Car) {
@@ -137,6 +132,15 @@ class AppViewModel(
             currentState.copy(
                 selectedCar = updateCar
             )
+        }
+    }
+
+
+    private fun validateInputNewCar(car: Car) : Boolean {
+        return with(car) {
+            name.isNotBlank()
+            && feature.isNotBlank()
+            && category.isNotBlank()
         }
     }
 

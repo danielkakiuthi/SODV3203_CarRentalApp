@@ -52,7 +52,6 @@ fun DisplayPageAddCar(
     onCancelButtonClicked: () -> Unit
 ) {
 
-    val newId by remember { mutableIntStateOf(appUiState.listAllRegisteredCars.last().id + 1) }
     var imageResourceId by remember { mutableIntStateOf(R.drawable.car00) }
     var name by remember { mutableStateOf("") }
     var feature by remember { mutableStateOf("") }
@@ -258,7 +257,6 @@ fun DisplayPageAddCar(
             ),
             keyboardActions = KeyboardActions(
                 onDone = { addCar(
-                    id = newId,
                     imageResourceId = imageResourceId,
                     name = name,
                     feature = feature,
@@ -283,7 +281,6 @@ fun DisplayPageAddCar(
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = { addCar(
-                        id = newId,
                         imageResourceId = imageResourceId,
                         name = name,
                         feature = feature,
@@ -309,7 +306,6 @@ fun DisplayPageAddCar(
 }
 
 fun addCar(
-    id: Int,
     imageResourceId: Int,
     name: String,
     feature: String,
@@ -320,7 +316,6 @@ fun addCar(
     onAddNewCarButtonClicked: (Car) -> Unit
 ) {
     val newCar = Car(
-        id = id,
         imageResourceId = imageResourceId,
         name = name,
         feature = feature,
