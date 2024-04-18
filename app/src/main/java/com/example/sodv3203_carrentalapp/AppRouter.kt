@@ -30,6 +30,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -48,6 +49,7 @@ import com.example.sodv3203_carrentalapp.ui.AppUiState
 import com.example.sodv3203_carrentalapp.data.User
 
 import com.example.sodv3203_carrentalapp.ui.AppViewModel
+import com.example.sodv3203_carrentalapp.ui.AppViewModelProvider
 import com.example.sodv3203_carrentalapp.ui.DisplayPageAddCar
 import com.example.sodv3203_carrentalapp.ui.DisplayPageBooking
 import com.example.sodv3203_carrentalapp.ui.DisplayPageFinalReservationDetails
@@ -59,6 +61,7 @@ import com.example.sodv3203_carrentalapp.ui.DisplayPageSearch
 import com.example.sodv3203_carrentalapp.ui.DisplayPageSignUp
 import com.example.sodv3203_carrentalapp.ui.DisplayPageSummary
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
+import kotlinx.coroutines.launch
 
 
 enum class PageTypes(@StringRes val title: Int) {
@@ -87,7 +90,9 @@ fun CarRentalAppBar(
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        modifier = modifier.padding(0.dp).height(30.dp),
+        modifier = modifier
+            .padding(0.dp)
+            .height(30.dp),
         navigationIcon = {
             if (canNavigateBack) {
                 IconButton(onClick = navigateUp) {
@@ -106,7 +111,7 @@ fun CarRentalAppBar(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CarRentalApp(
-    viewModel: AppViewModel = viewModel(),
+    viewModel: AppViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navController : NavHostController = rememberNavController()
     ) {
 
@@ -163,6 +168,7 @@ fun CarRentalApp(
 
             composable(route = PageTypes.SignUp.name) {
                 val context = LocalContext.current.applicationContext
+                val coroutineScope = rememberCoroutineScope()
                 DisplayPageSignUp(
                     appUiState = uiState,
                     onRegisterUserButtonClicked = { newUser ->
@@ -178,9 +184,11 @@ fun CarRentalApp(
                             Toast.makeText(context, "All fields are required.", Toast.LENGTH_SHORT).show()
                         }
                         else {
-                            Toast.makeText(context, "Signup Successful", Toast.LENGTH_SHORT).show()
-                            viewModel.addUserInDatabase(newUser)
-                            navController.navigate(PageTypes.Login.name)
+                            coroutineScope.launch {
+                                Toast.makeText(context, "Signup Successful", Toast.LENGTH_SHORT).show()
+                                viewModel.addUserInDatabase(newUser)
+                                navController.navigate(PageTypes.Login.name)
+                            }
                         }
                     },
                     onCancelButtonClicked = { navController.navigate(PageTypes.Login.name) },

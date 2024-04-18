@@ -5,15 +5,22 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.example.sodv3203_carrentalapp.data.Car
+import com.example.sodv3203_carrentalapp.data.CarRepository
 import com.example.sodv3203_carrentalapp.data.Reservation
+import com.example.sodv3203_carrentalapp.data.ReservationRepository
 import com.example.sodv3203_carrentalapp.data.User
+import com.example.sodv3203_carrentalapp.data.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 
-class AppViewModel : ViewModel() {
+class AppViewModel(
+    private val userRepository: UserRepository,
+    private val carRepository: CarRepository,
+    private val reservationRepository: ReservationRepository
+    ) : ViewModel() {
 
     // Define State
     @RequiresApi(Build.VERSION_CODES.O)
@@ -56,22 +63,30 @@ class AppViewModel : ViewModel() {
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addUserInDatabase(newUser: User) {
+    suspend fun addUserInDatabase(newUser: User) {
         Log.d("MyTag", "[ViewModel] addUserInDatabase is being called")
-        _uiState.update { currentState ->
-            currentState.copy(
-                listAllUsers = _uiState.value.listAllUsers.plus(newUser)
-            )
+
+        if(validateInputNewUser(newUser)) {
+            userRepository.insertUser(newUser)
+//            _uiState.update { currentState ->
+//                currentState.copy(
+//                    listAllUsers = _uiState.value.listAllUsers.plus(newUser)
+//                )
+//            }
+            Log.d("MyTag", "[addUserInDatabase] New User Successfully added to Database")
+            Log.d("MyTag", "newUser.Id added: ${newUser.id}")
+            Log.d("MyTag", "newUser.username added: ${newUser.username}")
         }
-        Log.d("MyTag", "listAllUsers length: ${_uiState.value.listAllUsers.size}")
-        Log.d("MyTag", "newUser.Id added: ${_uiState.value.listAllUsers.last().id}")
-        Log.d("MyTag", "newUser.username added: ${_uiState.value.listAllUsers.last().username}")
+        else {
+            Log.d("MyTag", "[addUserInDatabase] User not added to Database. Invalid Input for New User.")
+        }
     }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun updateUserInDatabase(updateUser: User) {
         Log.d("MyTag", "[ViewModel] updateUserInDatabase is being called")
+
         var tempList: MutableList<User> = _uiState.value.listAllUsers.toMutableList()
         tempList.forEach() {
             if(it.id==updateUser.id) {
@@ -84,6 +99,18 @@ class AppViewModel : ViewModel() {
             )
         }
         updateLoggedUser(updateUser)
+    }
+
+    private fun validateInputNewUser(user: User) : Boolean {
+        return with(user) {
+            username.isNotBlank()
+            && password.isNotBlank()
+            && firstName.isNotBlank()
+            && lastName.isNotBlank()
+            && birthDate.isNotBlank()
+            && phone.isNotBlank()
+            && email.isNotBlank()
+        }
     }
 
 
