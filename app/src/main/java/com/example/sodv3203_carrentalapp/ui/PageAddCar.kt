@@ -9,19 +9,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -40,37 +33,33 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.isDigitsOnly
 import com.example.sodv3203_carrentalapp.R
-import com.example.sodv3203_carrentalapp.data.User
+import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
 @Composable
-fun DisplayPageProfile(
+fun DisplayPageAddCar(
     appUiState: AppUiState,
     modifier: Modifier = Modifier,
-    onUpdateButtonClicked: (currentLoggedUser: User) -> Unit,
+    onAddNewCarButtonClicked: (newCar: Car) -> Unit,
     onCancelButtonClicked: () -> Unit
 ) {
 
-    var currentLoggedUser: User = appUiState.loggedUser ?: appUiState.placeholderUser
-
-    val id by remember { mutableIntStateOf(currentLoggedUser.id) }
-    var username by remember { mutableStateOf(currentLoggedUser.username) }
-    var password by remember { mutableStateOf(currentLoggedUser.password) }
-    var firstName by remember { mutableStateOf(currentLoggedUser.firstName) }
-    var lastName by remember { mutableStateOf(currentLoggedUser.lastName) }
-    var birthDate by remember { mutableStateOf(currentLoggedUser.birthDate) }
-    var phone by remember { mutableStateOf(currentLoggedUser.phone) }
-    var email by remember { mutableStateOf(currentLoggedUser.email) }
-
+    val newId by remember { mutableIntStateOf(appUiState.listAllRegisteredCars.last().id + 1) }
+    var imageResourceId by remember { mutableIntStateOf(R.drawable.car00) }
+    var name by remember { mutableStateOf("") }
+    var feature by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf("") }
+    var seat by remember { mutableIntStateOf(4) }
+    var bags by remember { mutableIntStateOf(0) }
+    var doors by remember { mutableIntStateOf(4) }
 
     Column(
         modifier = modifier
@@ -81,24 +70,27 @@ fun DisplayPageProfile(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "My Profile", fontSize = 30.sp)
+        Text(text = "Add Car", fontSize = 30.sp)
         Spacer(modifier = Modifier.padding(bottom = 20.dp))
 
         val focusManager = LocalFocusManager.current
 
         OutlinedTextField(
-            placeholder = { Text(text = "Usernames") },
-            value = username,
-            onValueChange = { username = it },
-            label = { Text(text = "Username")},
-            enabled = false,
+            placeholder = { Text(text = "Name") },
+            value = name,
+            onValueChange = { name = it },
+            label = { Text(text = "Name")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White
             ),
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Person, contentDescription = "Username")
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_car),
+                    contentDescription = "",
+                    modifier =  Modifier.size(30.dp)
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -113,24 +105,27 @@ fun DisplayPageProfile(
         )
 
         OutlinedTextField(
-            placeholder = { Text(text = "Password") },
-            value = password,
-            onValueChange = { password = it },
-            label = { Text(text = "Password")},
+            placeholder = { Text(text = "Feature") },
+            value = feature,
+            onValueChange = { feature = it },
+            label = { Text(text = "Feature")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White
             ),
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Lock, contentDescription = "Password")
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_features),
+                    contentDescription = "",
+                    modifier =  Modifier.size(30.dp)
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
-            visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Go
+                imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
@@ -138,18 +133,21 @@ fun DisplayPageProfile(
         )
 
         OutlinedTextField(
-            placeholder = { Text(text = "Firstname") },
-            value = firstName,
-            onValueChange = { validFirstName ->
-                firstName = validFirstName.filter { !it.isDigit() } },
-            label = { Text(text = "Firstname")},
+            placeholder = { Text(text = "Category") },
+            value = category,
+            onValueChange = { category = it },
+            label = { Text(text = "Category")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White
             ),
             leadingIcon = {
-                Icon(imageVector = Icons.Default.AccountBox, contentDescription = "Firstname")
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_category),
+                    contentDescription = "",
+                    modifier =  Modifier.size(30.dp)
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -164,75 +162,35 @@ fun DisplayPageProfile(
         )
 
         OutlinedTextField(
-            placeholder = { Text(text = "Lastname") },
-            value = lastName,
-            onValueChange = { validLastName ->
-                lastName = validLastName.filter { !it.isDigit() } },
-            label = { Text(text = "Lastname")},
-            shape = RoundedCornerShape(20.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White
-            ),
-            leadingIcon = {
-                Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Lastname")
+            placeholder = { Text(text = "Seats") },
+            value = seat.toString(),
+            onValueChange = {
+                try {
+                    seat = it.toInt()
+                }
+                catch(e: Exception) {
+                    seat = 0
+                }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-            ,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
-        )
-
-        OutlinedTextField(
-            placeholder = { Text(text = "Birthdate") },
-            value = birthDate,
-            onValueChange = { birthDate = it },
-            label = { Text(text = "Birthdate")},
+            label = { Text(text = "Seats") },
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White
             ),
             leadingIcon = {
-                Icon(imageVector = Icons.Default.DateRange, contentDescription = "Birthdate")
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-            ,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
-        )
-
-        OutlinedTextField(
-            placeholder = { Text(text = "Phone number") },
-            value = phone,
-            onValueChange = { if (it.isDigitsOnly()) phone = it },
-            label = { Text(text = "Phone number")},
-            shape = RoundedCornerShape(20.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White
-            ),
-            leadingIcon = {
-                Icon(imageVector = Icons.Default.Phone, contentDescription = "Phone number")
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_seats),
+                    contentDescription = "",
+                    modifier =  Modifier.size(30.dp)
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Go
+                imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
@@ -240,39 +198,80 @@ fun DisplayPageProfile(
         )
 
         OutlinedTextField(
-            placeholder = { Text(text = "Email") },
-            value = email,
-            onValueChange = { email = it },
-            label = { Text(text = "Email")},
+            placeholder = { Text(text = "Bags") },
+            value = bags.toString(),
+            onValueChange = {
+                validInput:String ->
+                bags = validInput.filter { it.isDigit() }.toInt()
+            },
+            label = { Text(text = "Bags") },
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White
             ),
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Email, contentDescription = "Email")
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_bags),
+                    contentDescription = "",
+                    modifier =  Modifier.size(30.dp)
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
-            ,
+                .padding(bottom = 8.dp),
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Go
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
-                onGo = { updateUser(
-                    id = id,
-                    username = username,
-                    password = password,
-                    firstName = firstName,
-                    lastName = lastName,
-                    birthDate = birthDate,
-                    phone = phone,
-                    email = email,
-                    onUpdateButtonClicked = onUpdateButtonClicked
+                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+            )
+        )
+
+        OutlinedTextField(
+            placeholder = { Text(text = "Doors") },
+            value = doors.toString(),
+            onValueChange = {
+                validInput:String ->
+                doors = validInput.filter { it.isDigit() }.toInt()
+            },
+            label = { Text(text = "Doors") },
+            shape = RoundedCornerShape(20.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White
+            ),
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_doors),
+                    contentDescription = "",
+                    modifier =  Modifier.size(30.dp)
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { addCar(
+                    id = newId,
+                    imageResourceId = imageResourceId,
+                    name = name,
+                    feature = feature,
+                    category = category,
+                    seat = seat,
+                    bags = bags,
+                    doors = doors,
+                    onAddNewCarButtonClicked = onAddNewCarButtonClicked
                 ) }
             )
         )
+
+
 
         Row(
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
@@ -283,70 +282,70 @@ fun DisplayPageProfile(
                 Button(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    onClick = { updateUser(
-                        id = id,
-                        username = username,
-                        password = password,
-                        firstName = firstName,
-                        lastName = lastName,
-                        birthDate = birthDate,
-                        phone = phone,
-                        email = email,
-                        onUpdateButtonClicked = onUpdateButtonClicked
+                    onClick = { addCar(
+                        id = newId,
+                        imageResourceId = imageResourceId,
+                        name = name,
+                        feature = feature,
+                        category = category,
+                        seat = seat,
+                        bags = bags,
+                        doors = doors,
+                        onAddNewCarButtonClicked = onAddNewCarButtonClicked
                     ) }
                 ) {
-                    Text(stringResource(R.string.button_update_user), fontSize = 22.sp)
+                    Text(stringResource(R.string.button_add_car), fontSize = 22.sp)
                 }
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onCancelButtonClicked() }
                 ) {
-//                    Text(stringResource(R.string.button_cancel), fontSize = 22.sp)
-                    Text(stringResource(R.string.button_back), fontSize = 22.sp)
+                    Text(stringResource(R.string.button_cancel), fontSize = 22.sp)
                 }
             }
         }
     }
 }
 
-fun updateUser(
+fun addCar(
     id: Int,
-    username: String,
-    password :String,
-    firstName :String,
-    lastName :String,
-    birthDate :String,
-    phone :String,
-    email :String,
-    onUpdateButtonClicked: (User) -> Unit
+    imageResourceId: Int,
+    name: String,
+    feature: String,
+    category: String,
+    seat: Int,
+    bags: Int,
+    doors: Int,
+    onAddNewCarButtonClicked: (Car) -> Unit
 ) {
-    val updatedUser = User(
+    val newCar = Car(
         id = id,
-        username = username,
-        password = password,
-        firstName = firstName,
-        lastName = lastName,
-        birthDate = birthDate,
-        phone = phone,
-        email = email
+        imageResourceId = imageResourceId,
+        name = name,
+        feature = feature,
+        category = category,
+        seat = seat,
+        bags = bags,
+        doors = doors
     )
-    onUpdateButtonClicked(updatedUser)
+    onAddNewCarButtonClicked(newCar)
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
-fun DisplayPageProfilePreview() {
+fun DisplayPageAddCarPreview() {
     SODV3203_CarRentalAppTheme {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .fillMaxWidth()
         ) {
-            DisplayPageProfile(
+            DisplayPageAddCar(
                 appUiState = AppUiState(),
-                onUpdateButtonClicked = {},
+                onAddNewCarButtonClicked = {},
                 onCancelButtonClicked = {}
             )
         }

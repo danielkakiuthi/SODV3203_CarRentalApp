@@ -3,7 +3,6 @@ package com.example.sodv3203_carrentalapp.ui
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.R
-import com.example.sodv3203_carrentalapp.data.AppUiState
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
@@ -144,70 +141,16 @@ fun DisplayPageSearch(
                 }
             }
         }
-        Row {
-            Text(
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                text = "Car features",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 18.dp, bottom = 18.dp)
-                )
-        }
+
         Row (
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 30.dp)
         ) {
-            Card(
-                   modifier = Modifier
-                       .width(160.dp)
-                       .height(80.dp)
-                       .clip(RoundedCornerShape(24.dp))
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(start = 16.dp)
-                    ) {
-                    Text(
-                        text = "Audio system",
-                        fontWeight = FontWeight.Bold,
-                        )
-                    Text(
-                        text = selectedCar.category,
-                        color = MaterialTheme.colorScheme.surfaceTint
-                    )
-                }
-            }
-            Card(
-                modifier = Modifier
-                    .width(160.dp)
-                    .height(80.dp)
-                    .clip(RoundedCornerShape(24.dp))
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(start = 16.dp)
-                ) {
-                    Text(
-                        text = "Connectivity",
-                        fontWeight = FontWeight.Bold,
-                        )
-                    Text(
-                        text = selectedCar.feature,
-                        color = MaterialTheme.colorScheme.surfaceTint
-                    )
-                }
-            }
+            Card_Addons(title = "Category", information = selectedCar.category)
+            Card_Addons(title = "Features", information = selectedCar.feature)
         }
 
 

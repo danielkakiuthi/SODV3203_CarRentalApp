@@ -33,9 +33,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.sodv3203_carrentalapp.data.AppUiState
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
+import com.example.sodv3203_carrentalapp.data.User
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 import kotlin.math.abs
 
@@ -43,17 +43,30 @@ import kotlin.math.abs
 fun DisplayPageBooking(
     appUiState: AppUiState,
     modifier: Modifier = Modifier,
-    onBackButtonClicked: () -> Unit = {},
-    onSignOutButtonClicked: () -> Unit = {},
-    onLandingButtonClicked: () -> Unit = {},
-    onProfileButtonClicked: () -> Unit = {},
-    onBookingButtonClicked: () -> Unit = {},
-    onHistoryButtonClicked: () -> Unit = {},
-    onSearchButtonClicked: (Car) -> Unit = {}
-
+    onLandingButtonClicked: () -> Unit,
+    onProfileButtonClicked: () -> Unit,
+    onHistoryButtonClicked: () -> Unit,
+    onAddNewCarButtonClicked: () -> Unit
 ) {
     val selectedReservation: Reservation = appUiState.selectedReservation ?: appUiState.placeholderReservation
     val dayDifference = abs(selectedReservation.endDate.time - selectedReservation.startDate.time) / (24*60*60*1000)
+
+    var selectedCar: Car = appUiState.placeholderCar
+    for (car in appUiState.listAllRegisteredCars) {
+        if(car.id == selectedReservation.carId) {
+            selectedCar = car
+            break
+        }
+    }
+
+    var selectedUser: User = appUiState.placeholderUser
+    for (user in appUiState.listAllUsers) {
+        if(user.id == selectedReservation.userId) {
+            selectedUser = user
+            break
+        }
+    }
+
 
     Column(
         modifier = modifier
@@ -75,7 +88,7 @@ fun DisplayPageBooking(
                     .fillMaxWidth()
             )
             Image(
-                painter = painterResource(id = selectedReservation.car.imageResourceId),
+                painter = painterResource(id = selectedCar.imageResourceId),
                 contentDescription = null,
                 modifier = Modifier
                     .height(100.dp)
@@ -83,7 +96,7 @@ fun DisplayPageBooking(
                     .padding(bottom = 0.dp)
             )
             Text(
-                text = selectedReservation.car.name,
+                text = selectedCar.name,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -113,7 +126,7 @@ fun DisplayPageBooking(
                         Text(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
-                            text = selectedReservation.car.seat.toString(),
+                            text = selectedCar.seat.toString(),
                         )
                         Text(
                             text = "seats",
@@ -137,7 +150,7 @@ fun DisplayPageBooking(
                         Text(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
-                            text = selectedReservation.car.doors.toString()  ,
+                            text = selectedCar.doors.toString()  ,
                         )
                         Text(
                             text = "doors",
@@ -161,7 +174,7 @@ fun DisplayPageBooking(
                         Text(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
-                            text = selectedReservation.car.bags.toString() ,
+                            text = selectedCar.bags.toString() ,
                         )
                         Text(
                             text = "bags",
@@ -186,8 +199,8 @@ fun DisplayPageBooking(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    Card_Addons(title = "Category", information = selectedReservation.car.category)
-                    Card_Addons(title = "Features", information = selectedReservation.car.feature)
+                    Card_Addons(title = "Category", information = selectedCar.category)
+                    Card_Addons(title = "Features", information = selectedCar.feature)
                 }
             }
 
@@ -204,7 +217,7 @@ fun DisplayPageBooking(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)
                 )
                 Text(
-                    text = selectedReservation.car.name,
+                    text = selectedCar.name,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -233,7 +246,8 @@ fun DisplayPageBooking(
         BottomNavigationBar(
             onLandingButtonClicked = onLandingButtonClicked,
             onProfileButtonClicked = onProfileButtonClicked,
-            onHistoryButtonClicked = onHistoryButtonClicked
+            onHistoryButtonClicked = onHistoryButtonClicked,
+            onAddNewCarButtonClicked = onAddNewCarButtonClicked
         )
 
     }
@@ -295,7 +309,11 @@ fun DisplayPageBookingPreview() {
             modifier = Modifier.fillMaxSize()
         ) {
             DisplayPageBooking(
-                appUiState = AppUiState()
+                appUiState = AppUiState(),
+                onLandingButtonClicked = {},
+                onProfileButtonClicked = {},
+                onHistoryButtonClicked = {},
+                onAddNewCarButtonClicked = {}
             )
         }
     }

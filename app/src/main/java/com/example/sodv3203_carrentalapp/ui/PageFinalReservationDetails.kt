@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -29,7 +28,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -42,12 +46,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.R
-import com.example.sodv3203_carrentalapp.data.AppUiState
 import com.example.sodv3203_carrentalapp.data.Reservation
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.Date
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DisplayPageFinalReservationDetails(
     appUiState: AppUiState,
@@ -55,25 +61,24 @@ fun DisplayPageFinalReservationDetails(
     onBackButtonClicked: () -> Unit = {},
     onConfirmButtonClicked: (Reservation) -> Unit = {}
 ) {
-
-    val datePickerStateStart = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
-    val datePickerStateEnd = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+    val currentZonedDateTime = ZonedDateTime.now(ZoneId.systemDefault())
+    val zoneOffset = currentZonedDateTime.offset
+    val datePickerStateStart = rememberDatePickerState(initialSelectedDateMillis = currentZonedDateTime.toInstant().toEpochMilli() + zoneOffset.totalSeconds * 1000, initialDisplayMode = DisplayMode.Input)
+    val datePickerStateEnd = rememberDatePickerState(initialSelectedDateMillis = currentZonedDateTime.toInstant().toEpochMilli() + zoneOffset.totalSeconds * 1000, initialDisplayMode = DisplayMode.Input)
     val focusManager = LocalFocusManager.current
 
+    val newReservationId by remember { mutableIntStateOf(appUiState.listAllReservations.last().id + 1) }
+    var loggedUser by remember { mutableStateOf(appUiState.loggedUser ?: appUiState.placeholderUser) }
+    var selectedCar by remember { mutableStateOf(appUiState.selectedCar ?: appUiState.placeholderCar) }
+    var location by remember { mutableStateOf("") }
+    var startDate = Date(datePickerStateStart.selectedDateMillis?.minus(zoneOffset.totalSeconds * 1000)?:0)
+    var endDate = Date(datePickerStateEnd.selectedDateMillis?.minus(zoneOffset.totalSeconds * 1000)?:0)
+    var pricePerDay by remember { mutableFloatStateOf(50f) }
+    var additionalRequests by remember { mutableStateOf("") }
+    var nameOnCard by remember { mutableStateOf("") }
+    var cardNumber by remember { mutableStateOf("") }
+    var cvc by remember { mutableStateOf("") }
 
-    var currentReservation: Reservation = remember{Reservation(
-        id = appUiState.listAllReservations.last().id + 1,
-        user = appUiState.loggedUser ?: appUiState.placeholderUser,
-        car = appUiState.selectedCar ?: appUiState.placeholderCar,
-        location = "",
-        startDate = Date(datePickerStateStart.selectedDateMillis?:0),
-        endDate = Date(datePickerStateEnd.selectedDateMillis?:0),
-        pricePerDay = 50f,
-        additionalRequests = "",
-        nameOnCard = "",
-        cardNumber = "",
-        cvc = ""
-    )}
 
     Column(
         modifier = modifier
@@ -92,7 +97,7 @@ fun DisplayPageFinalReservationDetails(
             )
             OutlinedTextField(
                 placeholder = { Text("123 Ave SW") },
-                value = currentReservation.location,
+                value = location,
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -103,7 +108,7 @@ fun DisplayPageFinalReservationDetails(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                onValueChange = { currentReservation.location=it },
+                onValueChange = { location=it },
                 label = {
                     Text("Pickup Location")
                 },
@@ -153,7 +158,7 @@ fun DisplayPageFinalReservationDetails(
             Text(text = "Additional Requests", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             OutlinedTextField(
                 placeholder = { Text("Eg. car model, color, etc") },
-                value = currentReservation.additionalRequests,
+                value = additionalRequests,
                 singleLine = false,
                 minLines = 4,
                 maxLines = 4,
@@ -166,7 +171,7 @@ fun DisplayPageFinalReservationDetails(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                onValueChange = { currentReservation.additionalRequests=it },
+                onValueChange = { additionalRequests=it },
                 label = {
                     Text("Additional Requests")
                 },
@@ -185,7 +190,7 @@ fun DisplayPageFinalReservationDetails(
             Text(text = "Payment", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             OutlinedTextField(
                 placeholder = { Text("John Doe") },
-                value = currentReservation.nameOnCard,
+                value = nameOnCard,
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -196,7 +201,7 @@ fun DisplayPageFinalReservationDetails(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                onValueChange = { currentReservation.nameOnCard=it },
+                onValueChange = { nameOnCard=it },
                 label = {
                     Text("Name on Card")
                 },
@@ -210,7 +215,7 @@ fun DisplayPageFinalReservationDetails(
             )
             OutlinedTextField(
                 placeholder = { Text("1111 2222 3333 4444") },
-                value = currentReservation.cardNumber,
+                value = cardNumber,
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -221,7 +226,7 @@ fun DisplayPageFinalReservationDetails(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                onValueChange = { currentReservation.cardNumber=it },
+                onValueChange = { cardNumber=it },
                 label = {
                     Text("Card Number")
                 },
@@ -235,7 +240,7 @@ fun DisplayPageFinalReservationDetails(
             )
             OutlinedTextField(
                 placeholder = { Text("123") },
-                value = currentReservation.cvc,
+                value = cvc,
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -246,7 +251,7 @@ fun DisplayPageFinalReservationDetails(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                onValueChange = { currentReservation.cvc=it },
+                onValueChange = { cvc=it },
                 label = {
                     Text("CVC")
                 },
@@ -255,7 +260,20 @@ fun DisplayPageFinalReservationDetails(
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { onConfirmButtonClicked(currentReservation) }
+                    onDone = { makePayment(
+                        reservationId = newReservationId,
+                        userId = loggedUser.id,
+                        carId = selectedCar.id,
+                        location = location,
+                        startDate = startDate,
+                        endDate = endDate,
+                        pricePerDay = pricePerDay,
+                        additionalRequests = additionalRequests,
+                        nameOnCard = nameOnCard,
+                        cardNumber = cardNumber,
+                        cvc = cvc,
+                        onConfirmButtonClicked = onConfirmButtonClicked
+                    ) }
                 )
             )
         }
@@ -270,7 +288,20 @@ fun DisplayPageFinalReservationDetails(
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { onConfirmButtonClicked(currentReservation) }
+                    onClick = { makePayment(
+                        reservationId = newReservationId,
+                        userId = loggedUser.id,
+                        carId = selectedCar.id,
+                        location = location,
+                        startDate = startDate,
+                        endDate = endDate,
+                        pricePerDay = pricePerDay,
+                        additionalRequests = additionalRequests,
+                        nameOnCard = nameOnCard,
+                        cardNumber = cardNumber,
+                        cvc = cvc,
+                        onConfirmButtonClicked = onConfirmButtonClicked
+                    ) }
                 ) {
                     Text(stringResource(R.string.button_complete_reservation))
                 }
@@ -285,6 +316,35 @@ fun DisplayPageFinalReservationDetails(
     }
 }
 
+fun makePayment(
+    reservationId: Int,
+    userId: Int,
+    carId: Int,
+    location: String,
+    startDate: Date,
+    endDate: Date,
+    pricePerDay: Float,
+    additionalRequests: String,
+    nameOnCard: String,
+    cardNumber: String,
+    cvc: String,
+    onConfirmButtonClicked: (Reservation) -> Unit
+) {
+    var currentReservation = Reservation(
+        id = reservationId,
+        userId = userId,
+        carId = carId,
+        location = location,
+        startDate = startDate,
+        endDate = endDate,
+        pricePerDay = pricePerDay,
+        additionalRequests = additionalRequests,
+        nameOnCard = nameOnCard,
+        cardNumber = cardNumber,
+        cvc = cvc
+    )
+    onConfirmButtonClicked(currentReservation)
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 1800)

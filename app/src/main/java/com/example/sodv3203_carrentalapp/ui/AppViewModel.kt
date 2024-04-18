@@ -4,7 +4,6 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
-import com.example.sodv3203_carrentalapp.data.AppUiState
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
 import com.example.sodv3203_carrentalapp.data.User
@@ -23,6 +22,10 @@ class AppViewModel : ViewModel() {
     val uiState : StateFlow<AppUiState> = _uiState.asStateFlow()
 
     // Define Custom Methods
+
+    /* --------------------------------------------------------------------------------------------
+    *  ------------------------------------ USERS -------------------------------------------------
+    *  -------------------------------------------------------------------------------------------- */
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateLoggedUser(updateUser: User?) {
         Log.d("MyTag", "[ViewModel] updateLoggedUser is being called")
@@ -80,8 +83,25 @@ class AppViewModel : ViewModel() {
                 listAllUsers = tempList.plus(updateUser)
             )
         }
+        updateLoggedUser(updateUser)
     }
 
+
+    /* --------------------------------------------------------------------------------------------
+    *  ------------------------------------- CARS -------------------------------------------------
+    *  -------------------------------------------------------------------------------------------- */
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun addCarInDatabase(newCar: Car) {
+        Log.d("MyTag", "[ViewModel] addCarInDatabase is being called")
+        _uiState.update { currentState ->
+            currentState.copy(
+                listAllRegisteredCars = _uiState.value.listAllRegisteredCars.plus(newCar)
+            )
+        }
+        Log.d("MyTag", "listAllRegisteredCars length: ${_uiState.value.listAllRegisteredCars.size}")
+        Log.d("MyTag", "newCar.Id added: ${_uiState.value.listAllRegisteredCars.last().id}")
+        Log.d("MyTag", "newCar.name added: ${_uiState.value.listAllRegisteredCars.last().name}")
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun updateSelectedCar(updateCar: Car) {
@@ -94,6 +114,9 @@ class AppViewModel : ViewModel() {
     }
 
 
+    /* --------------------------------------------------------------------------------------------
+    *  --------------------------------- RESERVATIONS ---------------------------------------------
+    *  -------------------------------------------------------------------------------------------- */
     @RequiresApi(Build.VERSION_CODES.O)
     fun addReservationInDatabase(newReservation: Reservation) {
         Log.d("MyTag", "[ViewModel] addReservationInDatabase is being called")

@@ -29,7 +29,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -44,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.example.sodv3203_carrentalapp.R
-import com.example.sodv3203_carrentalapp.data.AppUiState
 import com.example.sodv3203_carrentalapp.data.User
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
@@ -52,24 +55,18 @@ import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 fun DisplayPageSignUp(
     appUiState: AppUiState,
     modifier: Modifier = Modifier,
-    onRegisterUserButtonClicked: (newUser: User) -> Unit = {},
-    onCancelButtonClicked: () -> Unit = {}
+    onRegisterUserButtonClicked: (newUser: User) -> Unit,
+    onCancelButtonClicked: () -> Unit
 ) {
 
-    val newId = appUiState.listAllUsers.last().id + 1
-
-    val newUser: User = remember {
-        User(
-            id = newId,
-            username = "",
-            password = "",
-            firstName = "",
-            lastName = "",
-            birthDate = "",
-            phone = "",
-            email = ""
-        )
-    }
+    val newId by remember { mutableIntStateOf(appUiState.listAllUsers.last().id + 1) }
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
+    var birthDate by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -87,8 +84,8 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Username") },
-            value = newUser.username,
-            onValueChange = { newUser.username = it },
+            value = username,
+            onValueChange = { username = it },
             label = { Text(text = "Username")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -112,8 +109,8 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Password") },
-            value = newUser.password,
-            onValueChange = { newUser.password = it },
+            value = password,
+            onValueChange = { password = it },
             label = { Text(text = "Password")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -128,7 +125,7 @@ fun DisplayPageSignUp(
                 .padding(bottom = 8.dp),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Go
+                imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
@@ -137,9 +134,9 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Firstname") },
-            value = newUser.firstName,
+            value = firstName,
             onValueChange = { validFirstName ->
-                newUser.firstName = validFirstName.filter { !it.isDigit() } },
+                firstName = validFirstName.filter { !it.isDigit() } },
             label = { Text(text = "Firstname")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -163,9 +160,9 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Lastname") },
-            value = newUser.lastName,
+            value = lastName,
             onValueChange = { validLastName ->
-                newUser.lastName = validLastName.filter { !it.isDigit() } },
+                lastName = validLastName.filter { !it.isDigit() } },
             label = { Text(text = "Lastname")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -189,8 +186,8 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Birthdate") },
-            value = newUser.birthDate,
-            onValueChange = { newUser.birthDate = it },
+            value = birthDate,
+            onValueChange = { birthDate = it },
             label = { Text(text = "Birthdate")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -214,8 +211,8 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Phone number") },
-            value = newUser.phone,
-            onValueChange = { if (it.isDigitsOnly()) newUser.phone = it },
+            value = phone,
+            onValueChange = { if (it.isDigitsOnly()) phone = it },
             label = { Text(text = "Phone number")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -229,7 +226,7 @@ fun DisplayPageSignUp(
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Go
+                imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
@@ -238,8 +235,8 @@ fun DisplayPageSignUp(
 
         OutlinedTextField(
             placeholder = { Text(text = "Email") },
-            value = newUser.email,
-            onValueChange = { newUser.email = it },
+            value = email,
+            onValueChange = { email = it },
             label = { Text(text = "Email")},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.colors(
@@ -254,10 +251,20 @@ fun DisplayPageSignUp(
                 .padding(bottom = 8.dp)
             ,
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
-                onGo = { onRegisterUserButtonClicked(newUser) }
+                onDone = { registerUser(
+                    id = newId,
+                    username = username,
+                    password = password,
+                    firstName = firstName,
+                    lastName = lastName,
+                    birthDate = birthDate,
+                    phone = phone,
+                    email = email,
+                    onRegisterUserButtonClicked = onRegisterUserButtonClicked
+                )}
             )
         )
 
@@ -270,9 +277,17 @@ fun DisplayPageSignUp(
                 Button(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    onClick = {
-                        onRegisterUserButtonClicked(newUser)
-                    }
+                    onClick = { registerUser(
+                        id = newId,
+                        username = username,
+                        password = password,
+                        firstName = firstName,
+                        lastName = lastName,
+                        birthDate = birthDate,
+                        phone = phone,
+                        email = email,
+                        onRegisterUserButtonClicked = onRegisterUserButtonClicked
+                    )}
                 ) {
                     Text(stringResource(R.string.button_register_user), fontSize = 22.sp)
                 }
@@ -288,6 +303,32 @@ fun DisplayPageSignUp(
     }
 }
 
+
+fun registerUser(
+    id: Int,
+    username: String,
+    password :String,
+    firstName :String,
+    lastName :String,
+    birthDate :String,
+    phone :String,
+    email :String,
+    onRegisterUserButtonClicked:(newUser: User) -> Unit
+) {
+    val newUser = User(
+        id = id,
+        username = username,
+        password = password,
+        firstName = firstName,
+        lastName = lastName,
+        birthDate = birthDate,
+        phone = phone,
+        email = email
+    )
+    onRegisterUserButtonClicked(newUser)
+}
+
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
@@ -299,7 +340,9 @@ fun DisplayPageSignUpPreview() {
                 .fillMaxWidth()
         ) {
             DisplayPageSignUp(
-                appUiState = AppUiState()
+                appUiState = AppUiState(),
+                onRegisterUserButtonClicked = {},
+                onCancelButtonClicked = {}
             )
         }
     }

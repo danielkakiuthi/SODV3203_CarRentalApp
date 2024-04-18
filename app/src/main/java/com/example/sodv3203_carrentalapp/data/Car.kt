@@ -1,15 +1,17 @@
 package com.example.sodv3203_carrentalapp.data
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "cars")
 data class Car(
-    val id: Int,
-    @DrawableRes val imageResourceId: Int,
-    val name: String,
-    val feature: String,
-    val category: String,
-    val seat: Int,
-    val bags: Int,
-    val doors: Int,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    var imageResourceId: Int,
+    var name: String,
+    var feature: String,
+    var category: String,
+    var seat: Int,
+    var bags: Int,
+    var doors: Int,
 )

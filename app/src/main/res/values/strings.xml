@@ -4,6 +4,7 @@
     <string name="page_login_name">Login Page</string>
     <string name="page_signup_name">Sign Up Page</string>
     <string name="page_landing_name">Landing Page</string>
+    <string name="page_add_new_car">Add New Car Page</string>
     <string name="page_profile_name">Profile Page</string>
     <string name="page_booking_name">Past Booking Information</string>
     <string name="page_history_name">History Page</string>
@@ -14,8 +15,9 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_signout">Sign Out</string>
     <string name="button_next">Next</string>
-    <string name="button_register_user">Register</string>
-    <string name="button_update_user">Update</string>
+    <string name="button_add_car">Add Car</string>
+    <string name="button_register_user">Register User</string>
+    <string name="button_update_user">Update User</string>
     <string name="button_send">Confirm Reservation</string>
     <string name="button_complete_reservation">Make Payment</string>
 

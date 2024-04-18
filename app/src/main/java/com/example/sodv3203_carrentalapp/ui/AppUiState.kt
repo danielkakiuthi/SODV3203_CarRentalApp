@@ -1,4 +1,4 @@
-package com.example.sodv3203_carrentalapp.data
+package com.example.sodv3203_carrentalapp.ui
 
 import android.icu.text.SimpleDateFormat
 import android.os.Build
@@ -6,6 +6,9 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import com.example.sodv3203_carrentalapp.R
+import com.example.sodv3203_carrentalapp.data.Car
+import com.example.sodv3203_carrentalapp.data.Reservation
+import com.example.sodv3203_carrentalapp.data.User
 import java.util.Locale
 
 data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
@@ -31,8 +34,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
     val placeholderCar: Car = Car(0, R.drawable.car00, "[PLACEHOLDER_NAME]", "[PLACEHOLDER_FEATURE]", "[PLACEHOLDER_CATEGORY]",0,0,0 ),
     val placeholderReservation: Reservation = Reservation(
         id = 0,
-        user = placeholderUser,
-        car = placeholderCar,
+        userId = placeholderUser.id,
+        carId = placeholderCar.id,
         location = "[PLACEHOLDER_LOCATION]",
         startDate = sdf.parse("06/2/2024 12:00:00"),
         endDate = sdf.parse("08/2/2024 12:00:00"),
@@ -66,8 +69,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
     val listAllReservations: List<Reservation> = mutableListOf(
         Reservation(
             id = 0,
-            user = placeholderUser,
-            car = placeholderCar,
+            userId = placeholderUser.id,
+            carId = placeholderCar.id,
             location = "Calgary",
             startDate = sdf.parse("06/2/2024 12:00:00"),
             endDate = sdf.parse("08/2/2024 12:00:00"),
@@ -79,8 +82,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
         ),
         Reservation(
             id = 1,
-            user = placeholderUser,
-            car = placeholderCar,
+            userId = placeholderUser.id,
+            carId = placeholderCar.id,
             location = "Calgary",
             startDate = sdf.parse("07/2/2024 12:00:00"),
             endDate = sdf.parse("14/2/2024 12:00:00"),
@@ -92,8 +95,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
         ),
         Reservation(
             id = 2,
-            user = listAllUsers[0],
-            car = listAllRegisteredCars[0],
+            userId = listAllUsers[0].id,
+            carId = listAllRegisteredCars[0].id,
             location = "Calgary",
             startDate = sdf.parse("06/2/2024 12:00:00"),
             endDate = sdf.parse("08/2/2024 12:00:00"),
@@ -105,8 +108,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
         ),
         Reservation(
             id = 3,
-            user = listAllUsers[0],
-            car = listAllRegisteredCars[1],
+            userId = listAllUsers[0].id,
+            carId = listAllRegisteredCars[1].id,
             location = "Calgary",
             startDate = sdf.parse("10/2/2024 12:00:00"),
             endDate = sdf.parse("14/2/2024 12:00:00"),
@@ -118,8 +121,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
         ),
         Reservation(
             id = 4,
-            user = listAllUsers[0],
-            car = listAllRegisteredCars[6],
+            userId = listAllUsers[0].id,
+            carId = listAllRegisteredCars[6].id,
             location = "Calgary",
             startDate = sdf.parse("20/2/2024 12:00:00"),
             endDate = sdf.parse("21/2/2024 12:00:00"),
@@ -131,8 +134,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
         ),
         Reservation(
             id = 5,
-            user = listAllUsers[0],
-            car = listAllRegisteredCars[5],
+            userId = listAllUsers[0].id,
+            carId = listAllRegisteredCars[5].id,
             location = "Calgary",
             startDate = sdf.parse("22/2/2024 12:00:00"),
             endDate = sdf.parse("28/2/2024 12:00:00"),
@@ -144,8 +147,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
         ),
         Reservation(
             id = 6,
-            user = listAllUsers[0],
-            car = listAllRegisteredCars[0],
+            userId = listAllUsers[0].id,
+            carId = listAllRegisteredCars[0].id,
             location = "Calgary",
             startDate = sdf.parse("01/1/2024 12:00:00"),
             endDate = sdf.parse("4/1/2024 12:00:00"),
@@ -157,8 +160,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
         ),
         Reservation(
             id = 7,
-            user = listAllUsers[0],
-            car = listAllRegisteredCars[1],
+            userId = listAllUsers[0].id,
+            carId = listAllRegisteredCars[1].id,
             location = "Calgary",
             startDate = sdf.parse("04/2/2024 12:00:00"),
             endDate = sdf.parse("04/2/2024 12:00:00"),
@@ -170,8 +173,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
         ),
         Reservation(
             id = 8,
-            user = listAllUsers[0],
-            car = listAllRegisteredCars[2],
+            userId = listAllUsers[0].id,
+            carId = listAllRegisteredCars[2].id,
             location = "Calgary",
             startDate = sdf.parse("12/2/2024 12:00:00"),
             endDate = sdf.parse("14/2/2024 12:00:00"),
@@ -183,8 +186,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
         ),
         Reservation(
             id = 9,
-            user = listAllUsers[0],
-            car = listAllRegisteredCars[3],
+            userId = listAllUsers[0].id,
+            carId = listAllRegisteredCars[3].id,
             location = "Calgary",
             startDate = sdf.parse("22/2/2024 12:00:00"),
             endDate = sdf.parse("23/2/2024 12:00:00"),
@@ -196,8 +199,8 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
         ),
         Reservation(
             id = 10,
-            user = listAllUsers[0],
-            car = listAllRegisteredCars[4],
+            userId = listAllUsers[0].id,
+            carId = listAllRegisteredCars[4].id,
             location = "Calgary",
             startDate = sdf.parse("25/2/2024 12:00:00"),
             endDate = sdf.parse("1/3/2024 12:00:00"),
