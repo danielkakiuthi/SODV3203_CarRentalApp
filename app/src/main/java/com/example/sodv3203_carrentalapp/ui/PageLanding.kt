@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -26,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,15 +36,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.AppUiState
 import com.example.sodv3203_carrentalapp.data.Car
+import com.example.sodv3203_carrentalapp.data.WelcomeImage
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.yield
 
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun DisplayPageLanding(
     appUiState: AppUiState,
@@ -56,7 +66,16 @@ fun DisplayPageLanding(
 ) {
 
     val carsList: List<Car> = appUiState.listAllRegisteredCars
+    val welcomeSlide: List<WelcomeImage> = appUiState.welcomeImageSlid
+    val pagerState = rememberPagerState( welcomeSlide.size)
 
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(3000)
+            val nextPage = (pagerState.currentPage + 1)%pagerState.pageCount
+            pagerState.scrollToPage(nextPage)
+        }
+    }
 
     Column(
         modifier = modifier
@@ -65,35 +84,35 @@ fun DisplayPageLanding(
             .verticalScroll(rememberScrollState())
     ) {
 
-
-
-//        SearchBar()
-
-        Row (
+        Row(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
                 .height(440.dp)
                 .padding(top = 8.dp)
-        ){
-            Image(
-                painter = painterResource(id = R.drawable.starter),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            )
+
+        ) {
+            HorizontalPager( state = pagerState, count = welcomeSlide.size)
+            { page ->
+                Image(
+                    painter =  painterResource(id =  welcomeSlide[page].imageResourceId) ,
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
         }
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            LazyRow (){
-                items(carsList){
+            LazyRow() {
+                items(carsList) {
                     Image(
-                        painter = painterResource( id = it.imageResourceId),
-                        contentDescription = null ,
+                        painter = painterResource(id = it.imageResourceId),
+                        contentDescription = null,
                         modifier = Modifier
                             .background(MaterialTheme.colorScheme.onPrimary)
                             .border(3.dp, Color.White, shape = RoundedCornerShape(8.dp))

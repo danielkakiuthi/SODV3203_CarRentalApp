@@ -3,6 +3,8 @@ package com.example.sodv3203_carrentalapp.data
 import android.icu.text.SimpleDateFormat
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import com.example.sodv3203_carrentalapp.R
 import java.util.Locale
 
@@ -205,6 +207,14 @@ data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
             cardNumber = "1111222233334444",
             cvc = "123"
         ),
-
+    ),
+    val welcomeImageSlid: List<WelcomeImage> = listOf(
+        WelcomeImage( R.drawable.welcome01),
+        WelcomeImage( R.drawable.welcome02),
+        WelcomeImage( R.drawable.welcome03),
+        WelcomeImage( R.drawable.welcome04),
+        WelcomeImage( R.drawable.welcome05)
     )
+
+
 )
