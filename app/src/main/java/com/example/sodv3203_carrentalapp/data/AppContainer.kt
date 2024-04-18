@@ -4,23 +4,11 @@ import android.content.Context
 
 
 interface AppContainer {
-    val userRepository: UserRepository
-    val carRepository: CarRepository
-    val reservationRepository: ReservationRepository
-
+    val appRepository: AppRepository
 }
 
 class AppDataContainer(private val context: Context) : AppContainer {
-
-    override val userRepository: UserRepository by lazy {
-        UserRepositoryOffline(AppDatabase.getDatabase(context).userDao())
-    }
-
-    override val carRepository: CarRepository by lazy {
-        CarRepositoryOffline(AppDatabase.getDatabase(context).carDao())
-    }
-
-    override val reservationRepository: ReservationRepository by lazy {
-        ReservationRepositoryOffline(AppDatabase.getDatabase(context).reservationDao())
+    override val appRepository: AppRepository by lazy {
+        AppRepositoryOffline(AppDatabase.getDatabase(context).appDao())
     }
 }

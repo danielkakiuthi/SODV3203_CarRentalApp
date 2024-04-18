@@ -15,9 +15,7 @@ import java.util.Locale
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun userDao(): UserDao
-    abstract fun carDao(): CarDao
-    abstract fun reservationDao(): ReservationDao
+    abstract fun appDao(): AppDao
 
     companion object {
         @Volatile

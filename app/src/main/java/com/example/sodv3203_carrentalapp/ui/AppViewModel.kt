@@ -2,12 +2,10 @@ package com.example.sodv3203_carrentalapp.ui
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.sodv3203_carrentalapp.data.AppRepository
 import com.example.sodv3203_carrentalapp.data.Car
-import com.example.sodv3203_carrentalapp.data.CarRepository
 import com.example.sodv3203_carrentalapp.data.Reservation
-import com.example.sodv3203_carrentalapp.data.ReservationRepository
 import com.example.sodv3203_carrentalapp.data.User
-import com.example.sodv3203_carrentalapp.data.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,9 +13,7 @@ import kotlinx.coroutines.flow.update
 
 
 class AppViewModel(
-    private val userRepository: UserRepository,
-    private val carRepository: CarRepository,
-    private val reservationRepository: ReservationRepository
+    private val appRepository: AppRepository
     ) : ViewModel() {
 
     // Define State
@@ -58,7 +54,7 @@ class AppViewModel(
     suspend fun addUserInDatabase(newUser: User) {
         Log.d("MyTag", "[ViewModel] addUserInDatabase is being called")
         if(validateInputNewUser(newUser)) {
-            userRepository.insertUser(newUser)
+            appRepository.insertUser(newUser)
             Log.d("MyTag", "[addUserInDatabase] New User Successfully added to users Table")
             Log.d("MyTag", "newUser.username added: ${newUser.username}")
         }
@@ -105,7 +101,7 @@ class AppViewModel(
     suspend fun addCarInDatabase(newCar: Car) {
         Log.d("MyTag", "[ViewModel] addCarInDatabase is being called")
         if(validateInputNewCar(newCar)) {
-            carRepository.insertCar(newCar)
+            appRepository.insertCar(newCar)
             Log.d("MyTag", "[addCarInDatabase] New Car Successfully added to cars Table")
             Log.d("MyTag", "newCar.name added: ${newCar.name}")
         }
@@ -140,7 +136,7 @@ class AppViewModel(
     suspend fun addReservationInDatabase(newReservation: Reservation) {
         Log.d("MyTag", "[ViewModel] addReservationInDatabase is being called")
         if(validateInputNewReservation(newReservation)) {
-            reservationRepository.insertReservation(newReservation)
+            appRepository.insertReservation(newReservation)
             Log.d("MyTag", "[addReservationInDatabase] New Reservation Successfully added to reservations Table")
             Log.d("MyTag", "newReservation.userId added: ${newReservation.userId}")
             Log.d("MyTag", "newReservation.carId added: ${newReservation.carId}")

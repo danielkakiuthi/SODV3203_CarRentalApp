@@ -11,9 +11,7 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             AppViewModel(
-                carRentalApplication().container.userRepository,
-                carRentalApplication().container.carRepository,
-                carRentalApplication().container.reservationRepository
+                carRentalApplication().container.appRepository
             )
         }
     }
