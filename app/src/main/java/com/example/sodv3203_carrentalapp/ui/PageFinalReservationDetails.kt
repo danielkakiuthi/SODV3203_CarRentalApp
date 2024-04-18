@@ -52,9 +52,12 @@ import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
 import com.example.sodv3203_carrentalapp.data.User
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.Date
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DisplayPageFinalReservationDetails(
     appUiState: AppUiState,
@@ -62,17 +65,18 @@ fun DisplayPageFinalReservationDetails(
     onBackButtonClicked: () -> Unit = {},
     onConfirmButtonClicked: (Reservation) -> Unit = {}
 ) {
-
-    val datePickerStateStart = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
-    val datePickerStateEnd = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+    val currentZonedDateTime = ZonedDateTime.now(ZoneId.systemDefault())
+    val zoneOffset = currentZonedDateTime.offset
+    val datePickerStateStart = rememberDatePickerState(initialSelectedDateMillis = currentZonedDateTime.toInstant().toEpochMilli() + zoneOffset.totalSeconds * 1000, initialDisplayMode = DisplayMode.Input)
+    val datePickerStateEnd = rememberDatePickerState(initialSelectedDateMillis = currentZonedDateTime.toInstant().toEpochMilli() + zoneOffset.totalSeconds * 1000, initialDisplayMode = DisplayMode.Input)
     val focusManager = LocalFocusManager.current
 
     val newReservationId by remember { mutableIntStateOf(appUiState.listAllReservations.last().id + 1) }
     var loggedUser by remember { mutableStateOf(appUiState.loggedUser ?: appUiState.placeholderUser) }
     var selectedCar by remember { mutableStateOf(appUiState.selectedCar ?: appUiState.placeholderCar) }
     var location by remember { mutableStateOf("") }
-    var startDate by remember { mutableStateOf(Date(datePickerStateStart.selectedDateMillis?:0)) }
-    var endDate by remember { mutableStateOf(Date(datePickerStateEnd.selectedDateMillis?:0)) }
+    var startDate = Date(datePickerStateStart.selectedDateMillis?.minus(zoneOffset.totalSeconds * 1000)?:0)
+    var endDate = Date(datePickerStateEnd.selectedDateMillis?.minus(zoneOffset.totalSeconds * 1000)?:0)
     var pricePerDay by remember { mutableFloatStateOf(50f) }
     var additionalRequests by remember { mutableStateOf("") }
     var nameOnCard by remember { mutableStateOf("") }
@@ -262,8 +266,8 @@ fun DisplayPageFinalReservationDetails(
                 keyboardActions = KeyboardActions(
                     onDone = { makePayment(
                         reservationId = newReservationId,
-                        user = loggedUser,
-                        selectedCar = selectedCar,
+                        userId = loggedUser.id,
+                        carId = selectedCar.id,
                         location = location,
                         startDate = startDate,
                         endDate = endDate,
@@ -290,8 +294,8 @@ fun DisplayPageFinalReservationDetails(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { makePayment(
                         reservationId = newReservationId,
-                        user = loggedUser,
-                        selectedCar = selectedCar,
+                        userId = loggedUser.id,
+                        carId = selectedCar.id,
                         location = location,
                         startDate = startDate,
                         endDate = endDate,
@@ -318,8 +322,8 @@ fun DisplayPageFinalReservationDetails(
 
 fun makePayment(
     reservationId: Int,
-    user: User,
-    selectedCar: Car,
+    userId: Int,
+    carId: Int,
     location: String,
     startDate: Date,
     endDate: Date,
@@ -332,8 +336,8 @@ fun makePayment(
 ) {
     var currentReservation = Reservation(
         id = reservationId,
-        user = user,
-        car = selectedCar,
+        userId = userId,
+        carId = carId,
         location = location,
         startDate = startDate,
         endDate = endDate,

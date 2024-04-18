@@ -24,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,8 +42,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.AppUiState
+import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
+import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlin.math.abs
 
 @Composable
@@ -54,9 +58,17 @@ fun DisplayPageSummary(
 ) {
 
     val context = LocalContext.current.applicationContext
+    val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
     val selectedReservation: Reservation = appUiState.selectedReservation ?: appUiState.placeholderReservation
     val dayDifference = abs(selectedReservation.endDate.time - selectedReservation.startDate.time) / (24*60*60*1000)
 
+    var selectedCar: Car = appUiState.placeholderCar
+    for (car in appUiState.listAllRegisteredCars) {
+        if(car.id == selectedReservation.carId) {
+            selectedCar = car
+            break
+        }
+    }
 
     Column(
         modifier = modifier
@@ -71,7 +83,7 @@ fun DisplayPageSummary(
             modifier = Modifier.fillMaxWidth()
         )
         Image(
-            painter = painterResource(id = selectedReservation.car.imageResourceId),
+            painter = painterResource(id = selectedCar.imageResourceId),
             contentDescription = null,
             modifier = Modifier
                 .height(100.dp)
@@ -80,7 +92,7 @@ fun DisplayPageSummary(
         )
         Column(modifier = Modifier.padding(10.dp)) {
             Text(
-                text = selectedReservation.car.name,
+                text = selectedCar.name,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -97,8 +109,8 @@ fun DisplayPageSummary(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Card_Addons(title = "Category", information = selectedReservation.car.category)
-                Card_Addons(title = "Features", information = selectedReservation.car.feature)
+                Card_Addons(title = "Category", information = selectedCar.category)
+                Card_Addons(title = "Features", information = selectedCar.feature)
             }
 
         }
@@ -107,7 +119,7 @@ fun DisplayPageSummary(
             Text(text = "Pickup & Drop-off", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Card_PickupDropoff(
                 location = selectedReservation.location,
-                datetime = selectedReservation.startDate.toString()
+                datetime = formatter.format(selectedReservation.startDate)
             )
             Icon(
                 imageVector =  Icons.Filled.MoreVert,
@@ -119,7 +131,7 @@ fun DisplayPageSummary(
             )
             Card_PickupDropoff(
                 location = selectedReservation.location,
-                datetime = selectedReservation.endDate.toString()
+                datetime = formatter.format(selectedReservation.endDate)
             )
         }
 
@@ -138,12 +150,12 @@ fun DisplayPageSummary(
                 ) {
                     Text(stringResource(R.string.button_send))
                 }
-//                OutlinedButton(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    onClick = { onBackButtonClicked() }
-//                ) {
-//                    Text(stringResource(R.string.button_back))
-//                }
+                OutlinedButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onBackButtonClicked() }
+                ) {
+                    Text(stringResource(R.string.button_back))
+                }
             }
         }
     }

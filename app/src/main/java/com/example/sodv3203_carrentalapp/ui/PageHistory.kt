@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.AppUiState
+import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 import kotlin.math.abs
@@ -48,7 +49,7 @@ fun DisplayPageHistory(
     val currentUserId = (appUiState.loggedUser ?: appUiState.placeholderUser).id
 
     appUiState.listAllReservations.forEach() {
-        if(currentUserId==it.user.id) {
+        if(currentUserId==it.userId) {
             listReservationsCurrentUser.add(it)
         }
     }
@@ -69,8 +70,16 @@ fun DisplayPageHistory(
         if(appUiState.listAllUsers.isNotEmpty()) {
             LazyColumn() {
                 items(listReservationsCurrentUser) { reservation ->
+                    var selectedCar: Car = appUiState.placeholderCar
+                    for (car in appUiState.listAllRegisteredCars) {
+                        if(car.id == reservation.carId) {
+                            selectedCar = car
+                            break
+                        }
+                    }
                     CardBooking(
                         reservation = reservation,
+                        selectedCar = selectedCar,
                         onCardBookingClick = onCardBookingClick
                     )
                 }
@@ -99,6 +108,7 @@ fun DisplayPageHistory(
 @Composable
 private fun CardBooking(
     reservation: Reservation,
+    selectedCar: Car,
     onCardBookingClick: (reservation: Reservation) -> Unit
 ) {
     val dayDifference = abs(reservation.endDate.time - reservation.startDate.time) / (24*60*60*1000)
@@ -109,7 +119,7 @@ private fun CardBooking(
     ) {
         Row {
             Image(
-                painter = painterResource(id = reservation.car.imageResourceId),
+                painter = painterResource(id = selectedCar.imageResourceId),
                 contentDescription = null,
                 modifier = Modifier
                     .height(100.dp)
@@ -123,7 +133,7 @@ private fun CardBooking(
                     .padding(10.dp)
             ) {
 
-                Text(text = reservation.car.name, fontWeight = FontWeight.Bold)
+                Text(text = selectedCar.name, fontWeight = FontWeight.Bold)
                 Text(text = "From: ${reservation.startDate}", fontSize = 12.sp)
                 Text(text = "To: ${reservation.endDate}", fontSize = 12.sp)
                 Text(text = "Price: $${reservation.pricePerDay}/day, ${dayDifference} days", fontSize = 12.sp)
