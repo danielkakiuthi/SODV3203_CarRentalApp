@@ -37,16 +37,14 @@ abstract class AppDatabase : RoomDatabase() {
 
 class DateConverter {
     @TypeConverter
-    fun dateToString(dateInput: Date) : String {
+    fun dateToString(dateInput: Date): String {
         val formatter: Format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-        val s: String = formatter.format(dateInput)
-        return s
+        return formatter.format(dateInput)
     }
 
     @TypeConverter
-    fun stringToDate(stringInput: String) : Date? {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-        val date: Date? = formatter.parse(stringInput);
-        return date
+    fun stringToDate(stringInput: String): Date? {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+        return formatter.parse(stringInput)
     }
 }

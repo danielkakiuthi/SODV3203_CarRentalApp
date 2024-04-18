@@ -1,7 +1,5 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -54,7 +52,7 @@ fun DisplayPageSummary(
     onConfirmButtonClicked: () -> Unit = {}
 ) {
 
-    val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+    val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
     val selectedReservation: Reservation = appUiState.selectedReservation ?: appUiState.placeholderReservation
     val dayDifference = abs(selectedReservation.endDate.time - selectedReservation.startDate.time) / (24*60*60*1000) + 1
 
@@ -93,7 +91,7 @@ fun DisplayPageSummary(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "$${selectedReservation.pricePerDay}/day, ${dayDifference} days"
+                text = "$${selectedReservation.pricePerDay}/day, $dayDifference days"
             )
         }
 
@@ -231,7 +229,6 @@ private fun Card_PickupDropoff(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageSummaryPreview() {

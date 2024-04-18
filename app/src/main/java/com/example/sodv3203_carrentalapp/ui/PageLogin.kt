@@ -1,7 +1,5 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,7 +43,6 @@ import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
 @Composable
 fun DisplayPageLogin(
-    appUiState: AppUiState,
     modifier: Modifier = Modifier,
     onSignUpButtonClicked: () -> Unit = {},
     onLoginButtonClicked: (username: String, password: String) -> Unit = { _, _ -> }
@@ -148,7 +145,6 @@ fun DisplayPageLogin(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageLoginPreview() {
@@ -158,9 +154,7 @@ fun DisplayPageLoginPreview() {
                 .fillMaxSize()
                 .fillMaxWidth()
         ) {
-            DisplayPageLogin(
-                appUiState = AppUiState()
-            )
+            DisplayPageLogin()
         }
     }
 }

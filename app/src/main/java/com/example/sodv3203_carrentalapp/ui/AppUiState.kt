@@ -1,8 +1,6 @@
 package com.example.sodv3203_carrentalapp.ui
 
 import android.icu.text.SimpleDateFormat
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
@@ -10,7 +8,7 @@ import com.example.sodv3203_carrentalapp.data.User
 import com.example.sodv3203_carrentalapp.data.WelcomeImage
 import java.util.Locale
 
-data class AppUiState @RequiresApi(Build.VERSION_CODES.O) constructor(
+data class AppUiState (
     /*----------------------------------------------------------------------------------------------
     * ---------------------------------------- STATE -----------------------------------------------
     * ---------------------------------------------------------------------------------------------- */

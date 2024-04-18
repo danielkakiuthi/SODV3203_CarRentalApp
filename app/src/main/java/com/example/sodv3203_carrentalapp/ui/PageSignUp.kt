@@ -1,7 +1,5 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,7 +50,6 @@ import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
 @Composable
 fun DisplayPageSignUp(
-    appUiState: AppUiState,
     modifier: Modifier = Modifier,
     onRegisterUserButtonClicked: (newUser: User) -> Unit,
     onCancelButtonClicked: () -> Unit
@@ -323,7 +320,6 @@ fun registerUser(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageSignUpPreview() {
@@ -334,7 +330,6 @@ fun DisplayPageSignUpPreview() {
                 .fillMaxWidth()
         ) {
             DisplayPageSignUp(
-                appUiState = AppUiState(),
                 onRegisterUserButtonClicked = {},
                 onCancelButtonClicked = {}
             )

@@ -1,7 +1,5 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -102,7 +100,7 @@ fun DisplayPageLanding(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            LazyRow() {
+            LazyRow {
                 items(carsList) {
                     Image(
                         painter = painterResource(id = it.imageResourceId),
@@ -198,7 +196,6 @@ fun BottomNavigationBar(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageLandingPreview() {

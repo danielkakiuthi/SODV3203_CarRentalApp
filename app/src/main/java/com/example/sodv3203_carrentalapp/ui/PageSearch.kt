@@ -1,7 +1,5 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,7 +43,6 @@ fun DisplayPageSearch(
     onSelectButtonClicked: () -> Unit = {},
 ) {
 
-    val carsList: List<Car> = appUiState.listAllRegisteredCars
     val selectedCar: Car = appUiState.selectedCar ?: appUiState.placeholderCar
 
     Column(
@@ -55,7 +54,7 @@ fun DisplayPageSearch(
 
         }
         Image(
-            painter = painterResource(id = selectedCar.imageResourceId ?: R.drawable.seach_demo),
+            painter = painterResource(id = selectedCar.imageResourceId),
             contentDescription =  null,
             modifier = Modifier
                 .height(280.dp)
@@ -192,22 +191,24 @@ fun DisplayPageSearch(
         Column (
             modifier = Modifier
         ){
-            Row (
-            ){
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = onSelectButtonClicked,
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error ),
-                    ) {
-                    Text( "Select this car")
-                }
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onSelectButtonClicked,
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error ),
+                ) {
+                Text( "Select this car")
+            }
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onBackButtonClicked() }
+            ) {
+                Text(stringResource(R.string.button_back))
             }
         }
     }
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageSearchPreview() {

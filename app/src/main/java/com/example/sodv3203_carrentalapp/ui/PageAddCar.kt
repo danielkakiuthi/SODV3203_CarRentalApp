@@ -1,7 +1,5 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,7 +44,6 @@ import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
 @Composable
 fun DisplayPageAddCar(
-    appUiState: AppUiState,
     modifier: Modifier = Modifier,
     onAddNewCarButtonClicked: (newCar: Car) -> Unit,
     onCancelButtonClicked: () -> Unit
@@ -164,11 +161,10 @@ fun DisplayPageAddCar(
             placeholder = { Text(text = "Seats") },
             value = seat.toString(),
             onValueChange = {
-                try {
-                    seat = it.toInt()
-                }
-                catch(e: Exception) {
-                    seat = 0
+                seat = try {
+                    it.toInt()
+                } catch(e: Exception) {
+                    0
                 }
             },
             label = { Text(text = "Seats") },
@@ -328,7 +324,6 @@ fun addCar(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageAddCarPreview() {
@@ -339,7 +334,6 @@ fun DisplayPageAddCarPreview() {
                 .fillMaxWidth()
         ) {
             DisplayPageAddCar(
-                appUiState = AppUiState(),
                 onAddNewCarButtonClicked = {},
                 onCancelButtonClicked = {}
             )

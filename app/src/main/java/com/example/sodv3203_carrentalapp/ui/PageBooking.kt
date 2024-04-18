@@ -1,7 +1,5 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
-import com.example.sodv3203_carrentalapp.data.User
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 import kotlin.math.abs
 
@@ -55,14 +52,6 @@ fun DisplayPageBooking(
     for (car in appUiState.listAllRegisteredCars) {
         if(car.id == selectedReservation.carId) {
             selectedCar = car
-            break
-        }
-    }
-
-    var selectedUser: User = appUiState.placeholderUser
-    for (user in appUiState.listAllUsers) {
-        if(user.id == selectedReservation.userId) {
-            selectedUser = user
             break
         }
     }
@@ -222,7 +211,7 @@ fun DisplayPageBooking(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "$${selectedReservation.pricePerDay}/day, ${dayDifference} days",
+                    text = "$${selectedReservation.pricePerDay}/day, $dayDifference days",
                     textAlign = TextAlign.Center
                 )
                 Text(
@@ -300,7 +289,6 @@ private fun Card_PickupDropoff(
 
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 1000)
 @Composable
 fun DisplayPageBookingPreview() {

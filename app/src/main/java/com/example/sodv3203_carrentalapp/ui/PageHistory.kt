@@ -1,7 +1,5 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,7 +43,7 @@ fun DisplayPageHistory(
     var listReservationsCurrentUser = mutableListOf<Reservation>()
     val currentUserId = (appUiState.loggedUser ?: appUiState.placeholderUser).id
 
-    appUiState.listAllReservations.forEach() {
+    appUiState.listAllReservations.forEach {
         if(currentUserId==it.userId) {
             listReservationsCurrentUser.add(it)
         }
@@ -65,7 +63,7 @@ fun DisplayPageHistory(
         )
 
         if(appUiState.listAllUsers.isNotEmpty()) {
-            LazyColumn() {
+            LazyColumn {
                 items(listReservationsCurrentUser) { reservation ->
                     var selectedCar: Car = appUiState.placeholderCar
                     for (car in appUiState.listAllRegisteredCars) {
@@ -133,7 +131,7 @@ private fun CardBooking(
                 Text(text = selectedCar.name, fontWeight = FontWeight.Bold)
                 Text(text = "From: ${reservation.startDate}", fontSize = 12.sp)
                 Text(text = "To: ${reservation.endDate}", fontSize = 12.sp)
-                Text(text = "Price: $${reservation.pricePerDay}/day, ${dayDifference} days", fontSize = 12.sp)
+                Text(text = "Price: $${reservation.pricePerDay}/day, $dayDifference days", fontSize = 12.sp)
                 val totalPrice:Double = String.format("%.2f", reservation.pricePerDay * dayDifference).toDouble()
                 Text(text = "Total Price: $${totalPrice}", fontSize = 12.sp, fontWeight = FontWeight.Bold)
             }
@@ -142,7 +140,6 @@ private fun CardBooking(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageHistoryPreview() {

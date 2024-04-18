@@ -1,8 +1,6 @@
 package com.example.sodv3203_carrentalapp
 
-import android.os.Build
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -107,7 +105,6 @@ fun CarRentalAppBar(
 
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CarRentalApp(
     viewModel: AppViewModel = viewModel(factory = AppViewModelProvider.Factory),
@@ -149,7 +146,6 @@ fun CarRentalApp(
             composable(route = PageTypes.Login.name) {
                 val context = LocalContext.current.applicationContext
                 DisplayPageLogin(
-                    appUiState = uiState,
                     onSignUpButtonClicked = { navController.navigate(PageTypes.SignUp.name) },
                     onLoginButtonClicked = { username, password ->
                         if (viewModel.authenticate(username, password)) {
@@ -169,7 +165,6 @@ fun CarRentalApp(
                 val context = LocalContext.current.applicationContext
                 val coroutineScope = rememberCoroutineScope()
                 DisplayPageSignUp(
-                    appUiState = uiState,
                     onRegisterUserButtonClicked = { newUser ->
                         if(
                             newUser.username.isEmpty() or
@@ -244,7 +239,6 @@ fun CarRentalApp(
                 val context = LocalContext.current.applicationContext
                 val coroutineScope = rememberCoroutineScope()
                 DisplayPageAddCar(
-                    appUiState = uiState,
                     onAddNewCarButtonClicked = { newCar ->
                         if(
                             newCar.name.isEmpty() or
@@ -384,14 +378,11 @@ fun TopHeaderLoggedIn(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayCarRentalAppPreview() {
     SODV3203_CarRentalAppTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize()
-        ) {
+        Surface(modifier = Modifier.fillMaxSize()) {
             CarRentalApp()
         }
     }

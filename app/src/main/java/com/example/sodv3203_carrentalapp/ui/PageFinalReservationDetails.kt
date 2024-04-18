@@ -1,7 +1,5 @@
 package com.example.sodv3203_carrentalapp.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,7 +50,6 @@ import java.time.ZonedDateTime
 import java.util.Date
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DisplayPageFinalReservationDetails(
     appUiState: AppUiState,
@@ -276,7 +273,6 @@ fun DisplayPageFinalReservationDetails(
         }
 
 
-
         Row(
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
         ) {
@@ -340,7 +336,6 @@ fun makePayment(
     onConfirmButtonClicked(currentReservation)
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, heightDp = 1800)
 @Composable
 fun DisplayPageFinalReservationDetailsPreview() {
