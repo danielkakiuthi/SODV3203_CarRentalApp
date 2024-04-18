@@ -23,6 +23,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,18 +39,23 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sodv3203_carrentalapp.R
+import com.example.sodv3203_carrentalapp.data.User
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
 @Composable
 fun DisplayPageLogin(
+    onSignUpButtonClicked: () -> Unit,
+    onLoginButtonClicked: (isAuthenticated: Boolean, verifiedUser: User?) -> Unit,
     modifier: Modifier = Modifier,
-    onSignUpButtonClicked: () -> Unit = {},
-    onLoginButtonClicked: (username: String, password: String) -> Unit = { _, _ -> }
+    viewModel: AppViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     var username: String by remember{mutableStateOf("")}
     var password: String by remember{mutableStateOf("")}
 
+    //Don't remove this line (It's updating the StateFlow of the viewmodel even though the rariable is not being used)
+    val listAllUsers by viewModel.listAllUsers.collectAsState()
 
     Column(
         modifier = modifier
@@ -112,7 +118,7 @@ fun DisplayPageLogin(
                 imeAction = ImeAction.Go
             ),
             keyboardActions = KeyboardActions(
-                onGo = { onLoginButtonClicked(username, password) }
+                onGo = { loginUser(username, password, viewModel, onLoginButtonClicked) }
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -120,7 +126,7 @@ fun DisplayPageLogin(
         )
         
         Button(
-            onClick = { onLoginButtonClicked(username, password) },
+            onClick = { loginUser(username, password, viewModel, onLoginButtonClicked) },
             colors = ButtonDefaults.buttonColors(),
             contentPadding = PaddingValues(start = 60.dp, end = 60.dp, top = 8.dp, bottom = 8.dp),
             modifier = Modifier
@@ -145,6 +151,21 @@ fun DisplayPageLogin(
 }
 
 
+fun loginUser(
+    username: String,
+    password: String,
+    viewModel: AppViewModel,
+    onLoginButtonClicked: (isAuthenticated: Boolean, verifiedUser: User?) -> Unit
+) {
+    var isAuthenticated: Boolean = false
+    var verifiedUser: User? = viewModel.authenticate(username, password)
+    if(verifiedUser!=null) {
+        isAuthenticated = true
+    }
+    onLoginButtonClicked(isAuthenticated, verifiedUser)
+}
+
+
 @Preview(showBackground = true, heightDp = 800)
 @Composable
 fun DisplayPageLoginPreview() {
@@ -154,7 +175,10 @@ fun DisplayPageLoginPreview() {
                 .fillMaxSize()
                 .fillMaxWidth()
         ) {
-            DisplayPageLogin()
+            DisplayPageLogin(
+                onSignUpButtonClicked = {},
+                onLoginButtonClicked = {_, _ -> }
+            )
         }
     }
 }

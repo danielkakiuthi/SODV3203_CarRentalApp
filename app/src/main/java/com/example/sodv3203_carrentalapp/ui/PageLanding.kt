@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.WelcomeImage
@@ -49,15 +51,17 @@ import kotlinx.coroutines.delay
 @Composable
 fun DisplayPageLanding(
     appUiState: AppUiState,
-    modifier: Modifier = Modifier,
     onLandingButtonClicked: () -> Unit,
     onProfileButtonClicked: () -> Unit,
     onHistoryButtonClicked: () -> Unit,
     onSearchButtonClicked: (Car) -> Unit,
     onAddNewCarButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: AppViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
 
-    val carsList: List<Car> = appUiState.listAllRegisteredCars
+    val listAllCars by viewModel.listAllCars.collectAsState()
+
     val welcomeSlide: List<WelcomeImage> = appUiState.welcomeImageSlid
     val pagerState = rememberPagerState( welcomeSlide.size)
 
@@ -101,7 +105,7 @@ fun DisplayPageLanding(
                 .fillMaxWidth()
         ) {
             LazyRow {
-                items(carsList) {
+                items(listAllCars) {
                     Image(
                         painter = painterResource(id = it.imageResourceId),
                         contentDescription = null,

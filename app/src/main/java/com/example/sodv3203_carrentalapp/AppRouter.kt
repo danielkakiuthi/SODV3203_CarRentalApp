@@ -1,5 +1,6 @@
 package com.example.sodv3203_carrentalapp
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -105,6 +106,7 @@ fun CarRentalAppBar(
 
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun CarRentalApp(
     viewModel: AppViewModel = viewModel(factory = AppViewModelProvider.Factory),
@@ -147,8 +149,9 @@ fun CarRentalApp(
                 val context = LocalContext.current.applicationContext
                 DisplayPageLogin(
                     onSignUpButtonClicked = { navController.navigate(PageTypes.SignUp.name) },
-                    onLoginButtonClicked = { username, password ->
-                        if (viewModel.authenticate(username, password)) {
+                    onLoginButtonClicked = { isAuthenticated, verifiedUser ->
+                        if (isAuthenticated) {
+                            viewModel.updateLoggedUser(verifiedUser)
                             Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
                             navController.navigate(PageTypes.Landing.name)
                         }
@@ -209,6 +212,7 @@ fun CarRentalApp(
 
             composable(route = PageTypes.Profile.name) {
                 val context = LocalContext.current.applicationContext
+                val coroutineScope = rememberCoroutineScope()
                 DisplayPageProfile(
                     appUiState = uiState,
                     onUpdateButtonClicked = { currentLoggedUser ->
@@ -221,12 +225,14 @@ fun CarRentalApp(
                             currentLoggedUser.phone.isEmpty() or
                             currentLoggedUser.email.isEmpty()
                         ) {
-                            Toast.makeText(context, "All fields are required.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "[ERROR] User not updated in database. Verify user fields.", Toast.LENGTH_SHORT).show()
                         }
                         else {
-                            Toast.makeText(context, "Update Successful", Toast.LENGTH_SHORT).show()
-                            viewModel.updateUserInDatabase(currentLoggedUser)
-                            navController.navigate(PageTypes.Landing.name)
+                            coroutineScope.launch {
+                                Toast.makeText(context, "Updating user in database...", Toast.LENGTH_SHORT).show()
+                                viewModel.updateUserInDatabase(currentLoggedUser)
+                                navController.navigate(PageTypes.Landing.name)
+                            }
                         }
                     },
                     onCancelButtonClicked = { navController.navigate(PageTypes.Landing.name) },
@@ -278,7 +284,9 @@ fun CarRentalApp(
                     appUiState = uiState,
                     onBackButtonClicked = { navController.navigate(PageTypes.Landing.name) },
                     onCardBookingClick = {reservation ->
-                         viewModel.updateSelectedReservation(reservation)
+
+                        viewModel.updateSelectedReservation(reservation)
+                        viewModel.updateSelectedCarByCarId(reservation.carId)
                         navController.navigate(PageTypes.Booking.name)
                     },
                     modifier = Modifier

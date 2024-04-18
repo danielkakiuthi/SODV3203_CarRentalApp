@@ -2,13 +2,16 @@ package com.example.sodv3203_carrentalapp.ui
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.sodv3203_carrentalapp.data.AppRepository
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
 import com.example.sodv3203_carrentalapp.data.User
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 
@@ -16,16 +19,37 @@ class AppViewModel(
     private val appRepository: AppRepository
     ) : ViewModel() {
 
+    companion object {
+        private const val TIMEOUT_MILLIS = 5_000L
+    }
+
     // Define State
     private val _uiState = MutableStateFlow(AppUiState())
     val uiState : StateFlow<AppUiState> = _uiState.asStateFlow()
+
+    val listAllCars: StateFlow<List<Car>> = appRepository.getAllCarsStream().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+        initialValue = uiState.value.initialValue_ListAllCars
+    )
+    val listAllUsers: StateFlow<List<User>> = appRepository.getAllUsersStream().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+        initialValue = uiState.value.initialValue_ListAllUsers
+    )
+    val listAllReservations: StateFlow<List<Reservation>> = appRepository.getAllReservationsStream().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+        initialValue = uiState.value.initialValue_ListAllReservations
+    )
+
 
     // Define Custom Methods
 
     /* --------------------------------------------------------------------------------------------
     *  ------------------------------------ USERS -------------------------------------------------
     *  -------------------------------------------------------------------------------------------- */
-    private fun updateLoggedUser(updateUser: User?) {
+    fun updateLoggedUser(updateUser: User?) {
         Log.d("MyTag", "[ViewModel] updateLoggedUser is being called")
         _uiState.update { currentState ->
             currentState.copy(
@@ -35,14 +59,15 @@ class AppViewModel(
         }
     }
 
-    fun authenticate(username: String, password: String): Boolean {
+    fun authenticate(username: String, password: String): User? {
         Log.d("MyTag", "[ViewModel] authenticate is being called")
-        for (user in uiState.value.listAllUsers) {
+        for (user in listAllUsers.value) {
             if (username==user.username && password==user.password) {
                 updateLoggedUser(user)
+                return user
             }
         }
-        return uiState.value.isUserLoggedIn
+        return null
     }
 
     fun signout() {
@@ -64,20 +89,10 @@ class AppViewModel(
     }
 
 
-    fun updateUserInDatabase(updateUser: User) {
+    suspend fun updateUserInDatabase(updateUser: User) {
         Log.d("MyTag", "[ViewModel] updateUserInDatabase is being called")
 
-        var tempList: MutableList<User> = _uiState.value.listAllUsers.toMutableList()
-        tempList.forEach {
-            if(it.id==updateUser.id) {
-                tempList.remove(it)
-            }
-        }
-        _uiState.update {currentState ->
-            currentState.copy(
-                listAllUsers = tempList.plus(updateUser)
-            )
-        }
+        appRepository.updateUser(updateUser)
         updateLoggedUser(updateUser)
     }
 
@@ -111,13 +126,36 @@ class AppViewModel(
     }
 
 
-    fun updateSelectedCar(updateCar: Car) {
+    fun updateSelectedCar(car: Car) {
         Log.d("MyTag", "[ViewModel] updateSelectedCar is being called")
         _uiState.update { currentState ->
             currentState.copy(
-                selectedCar = updateCar
+                selectedCar = car
             )
         }
+    }
+
+    fun updateSelectedCarByCarId(carId: Int) {
+        Log.d("MyTag", "[ViewModel] updateSelectedCarByReservationId is being called")
+        for (car in listAllCars.value) {
+            if(carId == car.id) {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        selectedCar = car
+                    )
+                }
+                break
+            }
+        }
+    }
+
+    fun getCarById(carId: Int) : Car {
+        for(car in listAllCars.value) {
+            if(carId == car.id) {
+                return car
+            }
+        }
+        return uiState.value.placeholderCar
     }
 
 

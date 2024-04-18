@@ -47,12 +47,14 @@ data class AppUiState (
     * -------------------------------------- DATABASE ----------------------------------------------
     * ---------------------------------------------------------------------------------------------- */
     //Database Users
-    val listAllUsers: List<User> = mutableListOf(
+    val initialValue_ListAllUsers: List<User> = mutableListOf(
         User(1, "admin", "admin123", "John","Doe","11/19/2020", "123456789", "johndoe@mybvc.ca")
     ),
 
+
+
     //Database Registered Cars
-    val listAllRegisteredCars: List<Car> = mutableListOf(
+    val initialValue_ListAllCars: List<Car> = mutableListOf(
         Car(1, R.drawable.car01, "Ford Focus", "Eco Boost", "Sedan",4,3,4 ),
         Car(2, R.drawable.car02, "Toyota Camry", "Comfort Mode", "Sedan",4,4,4 ),
         Car(3, R.drawable.car03, "Nissan Leaf", "Flex Fuel", "Sedan",4,2,4 ),
@@ -63,147 +65,147 @@ data class AppUiState (
     ),
 
     //Database Reservations
-    val listAllReservations: List<Reservation> = mutableListOf(
+    val initialValue_ListAllReservations: List<Reservation> = mutableListOf(
         Reservation(
             id = 0,
-            userId = placeholderUser.id,
-            carId = placeholderCar.id,
+            userId = 0,
+            carId = 0,
             location = "Calgary",
             startDate = sdf.parse("06/2/2024 12:00:00"),
             endDate = sdf.parse("08/2/2024 12:00:00"),
             pricePerDay = 51.0f,
             additionalRequests = "",
-            nameOnCard = "${placeholderUser.firstName} ${placeholderUser.lastName}",
+            nameOnCard = "John Doe",
             cardNumber = "1111222233334444",
             cvc = "123"
         ),
         Reservation(
             id = 1,
-            userId = placeholderUser.id,
-            carId = placeholderCar.id,
+            userId = 0,
+            carId = 0,
             location = "Calgary",
             startDate = sdf.parse("07/2/2024 12:00:00"),
             endDate = sdf.parse("14/2/2024 12:00:00"),
             pricePerDay = 53.0f,
             additionalRequests = "",
-            nameOnCard = "${placeholderUser.firstName} ${placeholderUser.lastName}",
+            nameOnCard = "John Doe",
             cardNumber = "1111222233334444",
             cvc = "123"
         ),
         Reservation(
             id = 2,
-            userId = listAllUsers[0].id,
-            carId = listAllRegisteredCars[0].id,
+            userId = 1,
+            carId = 0,
             location = "Calgary",
             startDate = sdf.parse("06/2/2024 12:00:00"),
             endDate = sdf.parse("08/2/2024 12:00:00"),
             pricePerDay = 30.0f,
             additionalRequests = "",
-            nameOnCard = "${listAllUsers[0].firstName} ${listAllUsers[0].lastName}",
+            nameOnCard = "Ximena Compton",
             cardNumber = "1111222233334444",
             cvc = "123"
         ),
         Reservation(
             id = 3,
-            userId = listAllUsers[0].id,
-            carId = listAllRegisteredCars[1].id,
+            userId = 1,
+            carId = 1,
             location = "Calgary",
             startDate = sdf.parse("10/2/2024 12:00:00"),
             endDate = sdf.parse("14/2/2024 12:00:00"),
             pricePerDay = 40.0f,
             additionalRequests = "",
-            nameOnCard = "${listAllUsers[0].firstName} ${listAllUsers[0].lastName}",
+            nameOnCard = "Ximena Compton",
             cardNumber = "1111222233334444",
             cvc = "123"
         ),
         Reservation(
             id = 4,
-            userId = listAllUsers[0].id,
-            carId = listAllRegisteredCars[6].id,
+            userId = 1,
+            carId = 6,
             location = "Calgary",
             startDate = sdf.parse("20/2/2024 12:00:00"),
             endDate = sdf.parse("21/2/2024 12:00:00"),
             pricePerDay = 38.0f,
             additionalRequests = "",
-            nameOnCard = "${listAllUsers[0].firstName} ${listAllUsers[0].lastName}",
+            nameOnCard = "Ximena Compton",
             cardNumber = "1111222233334444",
             cvc = "123"
         ),
         Reservation(
             id = 5,
-            userId = listAllUsers[0].id,
-            carId = listAllRegisteredCars[5].id,
+            userId = 1,
+            carId = 5,
             location = "Calgary",
             startDate = sdf.parse("22/2/2024 12:00:00"),
             endDate = sdf.parse("28/2/2024 12:00:00"),
             pricePerDay = 42.5f,
             additionalRequests = "",
-            nameOnCard = "${listAllUsers[0].firstName} ${listAllUsers[0].lastName}",
+            nameOnCard = "Ximena Compton",
             cardNumber = "1111222233334444",
             cvc = "123"
         ),
         Reservation(
             id = 6,
-            userId = listAllUsers[0].id,
-            carId = listAllRegisteredCars[0].id,
+            userId = 0,
+            carId = 1,
             location = "Calgary",
             startDate = sdf.parse("01/1/2024 12:00:00"),
             endDate = sdf.parse("4/1/2024 12:00:00"),
             pricePerDay = 51.90f,
             additionalRequests = "",
-            nameOnCard = "${placeholderUser.firstName} ${placeholderUser.lastName}",
+            nameOnCard = "John Doe",
             cardNumber = "1111222233334444",
             cvc = "123"
         ),
         Reservation(
             id = 7,
-            userId = listAllUsers[0].id,
-            carId = listAllRegisteredCars[1].id,
+            userId = 1,
+            carId = 2,
             location = "Calgary",
             startDate = sdf.parse("04/2/2024 12:00:00"),
             endDate = sdf.parse("04/2/2024 12:00:00"),
             pricePerDay = 20.0f,
             additionalRequests = "",
-            nameOnCard = "${listAllUsers[0].firstName} ${listAllUsers[0].lastName}",
+            nameOnCard = "Ximena Compton",
             cardNumber = "1111222233334444",
             cvc = "123"
         ),
         Reservation(
             id = 8,
-            userId = listAllUsers[0].id,
-            carId = listAllRegisteredCars[2].id,
+            userId = 1,
+            carId = 3,
             location = "Calgary",
             startDate = sdf.parse("12/2/2024 12:00:00"),
             endDate = sdf.parse("14/2/2024 12:00:00"),
             pricePerDay = 39.0f,
             additionalRequests = "",
-            nameOnCard = "${listAllUsers[0].firstName} ${listAllUsers[0].lastName}",
+            nameOnCard = "Ximena Compton",
             cardNumber = "1111222233334444",
             cvc = "123"
         ),
         Reservation(
             id = 9,
-            userId = listAllUsers[0].id,
-            carId = listAllRegisteredCars[3].id,
+            userId = 1,
+            carId = 4,
             location = "Calgary",
             startDate = sdf.parse("22/2/2024 12:00:00"),
             endDate = sdf.parse("23/2/2024 12:00:00"),
             pricePerDay = 25.0f,
             additionalRequests = "",
-            nameOnCard = "${listAllUsers[0].firstName} ${listAllUsers[0].lastName}",
+            nameOnCard = "Ximena Compton",
             cardNumber = "1111222233334444",
             cvc = "123"
         ),
         Reservation(
             id = 10,
-            userId = listAllUsers[0].id,
-            carId = listAllRegisteredCars[4].id,
+            userId = 1,
+            carId = 5,
             location = "Calgary",
             startDate = sdf.parse("25/2/2024 12:00:00"),
             endDate = sdf.parse("1/3/2024 12:00:00"),
             pricePerDay = 32.5f,
             additionalRequests = "",
-            nameOnCard = "${listAllUsers[0].firstName} ${listAllUsers[0].lastName}",
+            nameOnCard = "Ximena Compton",
             cardNumber = "1111222233334444",
             cvc = "123"
         ),

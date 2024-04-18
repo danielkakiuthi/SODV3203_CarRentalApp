@@ -25,6 +25,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
@@ -47,17 +50,20 @@ import kotlin.math.abs
 @Composable
 fun DisplayPageSummary(
     appUiState: AppUiState,
+    onBackButtonClicked: () -> Unit,
+    onConfirmButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    onBackButtonClicked: () -> Unit = {},
-    onConfirmButtonClicked: () -> Unit = {}
+    viewModel: AppViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+
+    val listAllCars by viewModel.listAllCars.collectAsState()
 
     val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
     val selectedReservation: Reservation = appUiState.selectedReservation ?: appUiState.placeholderReservation
     val dayDifference = abs(selectedReservation.endDate.time - selectedReservation.startDate.time) / (24*60*60*1000) + 1
 
     var selectedCar: Car = appUiState.placeholderCar
-    for (car in appUiState.listAllRegisteredCars) {
+    for (car in listAllCars) {
         if(car.id == selectedReservation.carId) {
             selectedCar = car
             break
@@ -237,7 +243,9 @@ fun DisplayPageSummaryPreview() {
             modifier = Modifier.fillMaxSize()
         ) {
             DisplayPageSummary(
-                appUiState = AppUiState()
+                appUiState = AppUiState(),
+                onBackButtonClicked = {},
+                onConfirmButtonClicked = {}
             )
         }
     }

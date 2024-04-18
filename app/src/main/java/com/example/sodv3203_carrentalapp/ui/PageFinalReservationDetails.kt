@@ -54,8 +54,8 @@ import java.util.Date
 fun DisplayPageFinalReservationDetails(
     appUiState: AppUiState,
     modifier: Modifier = Modifier,
-    onBackButtonClicked: () -> Unit = {},
-    onConfirmButtonClicked: (Reservation) -> Unit = {}
+    onBackButtonClicked: () -> Unit,
+    onConfirmButtonClicked: (Reservation) -> Unit
 ) {
     val currentZonedDateTime = ZonedDateTime.now(ZoneId.systemDefault())
     val zoneOffset = currentZonedDateTime.offset
@@ -344,7 +344,9 @@ fun DisplayPageFinalReservationDetailsPreview() {
             modifier = Modifier.fillMaxSize()
         ) {
             DisplayPageFinalReservationDetails(
-                appUiState = AppUiState()
+                appUiState = AppUiState(),
+                onBackButtonClicked = {},
+                onConfirmButtonClicked = {}
             )
         }
     }

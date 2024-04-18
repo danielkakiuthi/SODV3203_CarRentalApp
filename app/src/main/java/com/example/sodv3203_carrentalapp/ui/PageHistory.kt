@@ -16,6 +16,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
@@ -26,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.data.Reservation
@@ -36,14 +39,19 @@ import kotlin.math.abs
 @Composable
 fun DisplayPageHistory(
     appUiState: AppUiState,
+    onCardBookingClick: (reservation: Reservation) -> Unit,
+    onBackButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    onCardBookingClick: (reservation: Reservation) -> Unit = {},
-    onBackButtonClicked: () -> Unit = {}
+    viewModel: AppViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+
+    val listAllReservations by viewModel.listAllReservations.collectAsState()
+    val listAllCars by viewModel.listAllCars.collectAsState()
+
     var listReservationsCurrentUser = mutableListOf<Reservation>()
     val currentUserId = (appUiState.loggedUser ?: appUiState.placeholderUser).id
 
-    appUiState.listAllReservations.forEach {
+    listAllReservations.forEach {
         if(currentUserId==it.userId) {
             listReservationsCurrentUser.add(it)
         }
@@ -62,20 +70,25 @@ fun DisplayPageHistory(
                 .fillMaxWidth()
         )
 
-        if(appUiState.listAllUsers.isNotEmpty()) {
+        if(appUiState.loggedUser!=null) {
             LazyColumn {
                 items(listReservationsCurrentUser) { reservation ->
-                    var selectedCar: Car = appUiState.placeholderCar
-                    for (car in appUiState.listAllRegisteredCars) {
+                    var currentCar: Car = appUiState.placeholderCar
+                    for(car in listAllCars) {
                         if(car.id == reservation.carId) {
-                            selectedCar = car
+                            currentCar = car
                             break
                         }
                     }
+
                     CardBooking(
                         reservation = reservation,
-                        selectedCar = selectedCar,
-                        onCardBookingClick = onCardBookingClick
+                        selectedCar = currentCar,
+                        onCardBookingClick = {
+
+                            onCardBookingClick(reservation)
+
+                        }
                     )
                 }
             }
@@ -148,7 +161,9 @@ fun DisplayPageHistoryPreview() {
             modifier = Modifier.fillMaxSize()
         ) {
             DisplayPageHistory(
-                appUiState = AppUiState()
+                appUiState = AppUiState(),
+                onBackButtonClicked = {},
+                onCardBookingClick = {}
             )
         }
     }

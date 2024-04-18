@@ -44,15 +44,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.User
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 
 @Composable
 fun DisplayPageSignUp(
-    modifier: Modifier = Modifier,
     onRegisterUserButtonClicked: (newUser: User) -> Unit,
-    onCancelButtonClicked: () -> Unit
+    onCancelButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: AppViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
 
     var username by remember { mutableStateOf("") }

@@ -38,9 +38,9 @@ import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 @Composable
 fun DisplayPageSearch(
     appUiState: AppUiState,
+    onBackButtonClicked: () -> Unit,
+    onSelectButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    onBackButtonClicked: () -> Unit = {},
-    onSelectButtonClicked: () -> Unit = {},
 ) {
 
     val selectedCar: Car = appUiState.selectedCar ?: appUiState.placeholderCar
@@ -217,7 +217,9 @@ fun DisplayPageSearchPreview() {
             modifier = Modifier.fillMaxSize()
         ) {
             DisplayPageSearch(
-                appUiState = AppUiState()
+                appUiState = AppUiState(),
+                onBackButtonClicked = {},
+                onSelectButtonClicked = {}
             )
         }
     }

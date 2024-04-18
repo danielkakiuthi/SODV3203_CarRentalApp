@@ -48,14 +48,7 @@ fun DisplayPageBooking(
     val selectedReservation: Reservation = appUiState.selectedReservation ?: appUiState.placeholderReservation
     val dayDifference = abs(selectedReservation.endDate.time - selectedReservation.startDate.time) / (24*60*60*1000)
 
-    var selectedCar: Car = appUiState.placeholderCar
-    for (car in appUiState.listAllRegisteredCars) {
-        if(car.id == selectedReservation.carId) {
-            selectedCar = car
-            break
-        }
-    }
-
+    var selectedCar: Car = appUiState.selectedCar ?: appUiState.placeholderCar
 
     Column(
         modifier = modifier

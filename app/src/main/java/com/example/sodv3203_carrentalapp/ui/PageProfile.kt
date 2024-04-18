@@ -53,9 +53,9 @@ import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
 @Composable
 fun DisplayPageProfile(
     appUiState: AppUiState,
-    modifier: Modifier = Modifier,
     onUpdateButtonClicked: (currentLoggedUser: User) -> Unit,
-    onCancelButtonClicked: () -> Unit
+    onCancelButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     var currentLoggedUser: User = appUiState.loggedUser ?: appUiState.placeholderUser
