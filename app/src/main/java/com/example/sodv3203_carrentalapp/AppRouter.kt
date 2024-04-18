@@ -304,6 +304,7 @@ fun CarRentalApp(
 
             composable(route = PageTypes.FinalReservationDetails.name) {
                 val context = LocalContext.current.applicationContext
+                val coroutineScope = rememberCoroutineScope()
                 DisplayPageFinalReservationDetails(
                     appUiState = uiState,
                     onBackButtonClicked = { navController.navigate(PageTypes.Search.name) },
@@ -314,13 +315,15 @@ fun CarRentalApp(
                             currentReservation.cardNumber.isEmpty() or
                             currentReservation.cvc.isEmpty()
                         ) {
-                            Toast.makeText(context, "All fields are required.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "[ERROR] New Reservation not added to database. Verify reservation fields.", Toast.LENGTH_SHORT).show()
                         }
                         else {
-                            Toast.makeText(context, "Final Reservation Successful", Toast.LENGTH_SHORT).show()
-                            viewModel.addReservationInDatabase(currentReservation)
-                            viewModel.updateSelectedReservation(currentReservation)
-                            navController.navigate(PageTypes.Summary.name)
+                            coroutineScope.launch {
+                                Toast.makeText(context, "Adding new reservation to database...", Toast.LENGTH_SHORT).show()
+                                viewModel.addReservationInDatabase(currentReservation)
+                                viewModel.updateSelectedReservation(currentReservation)
+                                navController.navigate(PageTypes.Summary.name)
+                            }
                         }
                     },
                     modifier = Modifier
@@ -329,10 +332,14 @@ fun CarRentalApp(
             }
 
             composable(route = PageTypes.Summary.name) {
+                val context = LocalContext.current.applicationContext
                 DisplayPageSummary(
                     appUiState = uiState,
                     onBackButtonClicked = { navController.navigate(PageTypes.Search.name) },
-                    onConfirmButtonClicked = { navController.navigate(PageTypes.Landing.name) },
+                    onConfirmButtonClicked = {
+                        Toast.makeText(context, "Reservation Successful", Toast.LENGTH_SHORT).show()
+                        navController.navigate(PageTypes.Landing.name)
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                 )

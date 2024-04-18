@@ -1,7 +1,6 @@
 package com.example.sodv3203_carrentalapp.ui
 
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -31,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -56,10 +54,9 @@ fun DisplayPageSummary(
     onConfirmButtonClicked: () -> Unit = {}
 ) {
 
-    val context = LocalContext.current.applicationContext
     val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
     val selectedReservation: Reservation = appUiState.selectedReservation ?: appUiState.placeholderReservation
-    val dayDifference = abs(selectedReservation.endDate.time - selectedReservation.startDate.time) / (24*60*60*1000)
+    val dayDifference = abs(selectedReservation.endDate.time - selectedReservation.startDate.time) / (24*60*60*1000) + 1
 
     var selectedCar: Car = appUiState.placeholderCar
     for (car in appUiState.listAllRegisteredCars) {
@@ -144,7 +141,6 @@ fun DisplayPageSummary(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         onConfirmButtonClicked()
-                        Toast.makeText(context, "Reservation Successful", Toast.LENGTH_SHORT).show()
                     }
                 ) {
                     Text(stringResource(R.string.button_send))

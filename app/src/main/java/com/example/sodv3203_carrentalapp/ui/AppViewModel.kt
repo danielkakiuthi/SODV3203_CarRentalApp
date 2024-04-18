@@ -149,15 +149,17 @@ class AppViewModel(
     *  --------------------------------- RESERVATIONS ---------------------------------------------
     *  -------------------------------------------------------------------------------------------- */
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addReservationInDatabase(newReservation: Reservation) {
+    suspend fun addReservationInDatabase(newReservation: Reservation) {
         Log.d("MyTag", "[ViewModel] addReservationInDatabase is being called")
-        _uiState.update { currentState ->
-            currentState.copy(
-                listAllReservations = _uiState.value.listAllReservations.plus(newReservation)
-            )
+        if(validateInputNewReservation(newReservation)) {
+            reservationRepository.insertReservation(newReservation)
+            Log.d("MyTag", "[addReservationInDatabase] New Reservation Successfully added to reservations Table")
+            Log.d("MyTag", "newReservation.userId added: ${newReservation.userId}")
+            Log.d("MyTag", "newReservation.carId added: ${newReservation.carId}")
         }
-        Log.d("MyTag", "listAllReservations length: ${_uiState.value.listAllReservations.size}")
-        Log.d("MyTag", "newReservation.id added: ${_uiState.value.listAllReservations.last().id}")
+        else {
+            Log.d("MyTag", "[addReservationInDatabase] Reservation not added to Database. Invalid Input for New Reservation.")
+        }
     }
 
 
@@ -168,6 +170,16 @@ class AppViewModel(
             currentState.copy(
                 selectedReservation = updateReservation
             )
+        }
+    }
+
+
+    private fun validateInputNewReservation(reservation: Reservation) : Boolean {
+        return with(reservation) {
+            location.isNotBlank()
+            && nameOnCard.isNotBlank()
+            && cardNumber.isNotBlank()
+            && cvc.isNotBlank()
         }
     }
 

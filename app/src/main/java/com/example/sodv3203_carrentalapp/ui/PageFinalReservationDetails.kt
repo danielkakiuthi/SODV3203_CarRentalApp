@@ -30,7 +30,6 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -67,7 +66,6 @@ fun DisplayPageFinalReservationDetails(
     val datePickerStateEnd = rememberDatePickerState(initialSelectedDateMillis = currentZonedDateTime.toInstant().toEpochMilli() + zoneOffset.totalSeconds * 1000, initialDisplayMode = DisplayMode.Input)
     val focusManager = LocalFocusManager.current
 
-    val newReservationId by remember { mutableIntStateOf(appUiState.listAllReservations.last().id + 1) }
     var loggedUser by remember { mutableStateOf(appUiState.loggedUser ?: appUiState.placeholderUser) }
     var selectedCar by remember { mutableStateOf(appUiState.selectedCar ?: appUiState.placeholderCar) }
     var location by remember { mutableStateOf("") }
@@ -261,7 +259,6 @@ fun DisplayPageFinalReservationDetails(
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = { makePayment(
-                        reservationId = newReservationId,
                         userId = loggedUser.id,
                         carId = selectedCar.id,
                         location = location,
@@ -289,7 +286,6 @@ fun DisplayPageFinalReservationDetails(
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { makePayment(
-                        reservationId = newReservationId,
                         userId = loggedUser.id,
                         carId = selectedCar.id,
                         location = location,
@@ -317,7 +313,6 @@ fun DisplayPageFinalReservationDetails(
 }
 
 fun makePayment(
-    reservationId: Int,
     userId: Int,
     carId: Int,
     location: String,
@@ -331,7 +326,6 @@ fun makePayment(
     onConfirmButtonClicked: (Reservation) -> Unit
 ) {
     var currentReservation = Reservation(
-        id = reservationId,
         userId = userId,
         carId = carId,
         location = location,
