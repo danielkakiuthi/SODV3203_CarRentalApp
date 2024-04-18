@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@Database(entities = [User::class, Car::class, Reservation::class], version = 2, exportSchema = false)
+@Database(entities = [User::class, Car::class, Reservation::class], version = 3, exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

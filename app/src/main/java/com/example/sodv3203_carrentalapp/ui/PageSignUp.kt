@@ -30,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -59,7 +58,7 @@ fun DisplayPageSignUp(
     onCancelButtonClicked: () -> Unit
 ) {
 
-    val newId by remember { mutableIntStateOf(appUiState.listAllUsers.last().id + 1) }
+    //val newId by remember { mutableIntStateOf(appUiState.listAllUsers.last().id + 1) }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
@@ -255,7 +254,6 @@ fun DisplayPageSignUp(
             ),
             keyboardActions = KeyboardActions(
                 onDone = { registerUser(
-                    id = newId,
                     username = username,
                     password = password,
                     firstName = firstName,
@@ -278,7 +276,6 @@ fun DisplayPageSignUp(
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = { registerUser(
-                        id = newId,
                         username = username,
                         password = password,
                         firstName = firstName,
@@ -305,7 +302,6 @@ fun DisplayPageSignUp(
 
 
 fun registerUser(
-    id: Int,
     username: String,
     password :String,
     firstName :String,
@@ -316,7 +312,6 @@ fun registerUser(
     onRegisterUserButtonClicked:(newUser: User) -> Unit
 ) {
     val newUser = User(
-        id = id,
         username = username,
         password = password,
         firstName = firstName,
