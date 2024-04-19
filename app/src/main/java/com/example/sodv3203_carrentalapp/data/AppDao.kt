@@ -17,6 +17,8 @@ interface AppDao {
      * ---------------------------------------------------------------------- */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(car: Car)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertListCars(listCars: List<Car>)
     @Update
     suspend fun update(car: Car)
     @Delete
@@ -32,6 +34,8 @@ interface AppDao {
      * ---------------------------------------------------------------------- */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(user: User)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertListUsers(listUsers: List<User>)
     @Update
     suspend fun update(user: User)
     @Delete
@@ -47,6 +51,8 @@ interface AppDao {
      * ---------------------------------------------------------------------- */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(reservation: Reservation)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertListReservations(listReservations: List<Reservation>)
     @Update
     suspend fun update(reservation: Reservation)
     @Delete

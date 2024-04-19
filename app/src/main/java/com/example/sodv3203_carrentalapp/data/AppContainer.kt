@@ -9,6 +9,6 @@ interface AppContainer {
 
 class AppDataContainer(private val context: Context) : AppContainer {
     override val appRepository: AppRepository by lazy {
-        AppRepositoryOffline(AppDatabase.getDatabase(context).appDao())
+        AppRepositoryOffline(AppDatabase.getInstance(context).appDao())
     }
 }

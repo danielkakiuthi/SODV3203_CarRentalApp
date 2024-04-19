@@ -14,4 +14,5 @@ data class Car(
     var seat: Int,
     var bags: Int,
     var doors: Int,
+    var imageUrl: String = ""
 )

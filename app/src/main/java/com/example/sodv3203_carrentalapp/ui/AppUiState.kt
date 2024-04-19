@@ -48,20 +48,20 @@ data class AppUiState (
     * ---------------------------------------------------------------------------------------------- */
     //Database Users
     val initialValue_ListAllUsers: List<User> = mutableListOf(
-        User(1, "admin", "admin123", "John","Doe","11/19/2020", "123456789", "johndoe@mybvc.ca")
+        User(0, "admin", "admin123", "John","Doe","11/19/2020", "123456789", "johndoe@mybvc.ca")
     ),
 
 
 
     //Database Registered Cars
     val initialValue_ListAllCars: List<Car> = mutableListOf(
-        Car(1, R.drawable.car01, "Ford Focus", "Eco Boost", "Sedan",4,3,4 ),
-        Car(2, R.drawable.car02, "Toyota Camry", "Comfort Mode", "Sedan",4,4,4 ),
-        Car(3, R.drawable.car03, "Nissan Leaf", "Flex Fuel", "Sedan",4,2,4 ),
-        Car(4, R.drawable.car04, "Honda CRV", "Vtec LEV", "SUVs",5,5,4 ),
-        Car(5, R.drawable.car05, "KIA Sportage", "Full time 4 wheels", "SUVs",5,5,4 ),
-        Car(6, R.drawable.car06, "Toyota RAV4", "Hybrid vehicle", "SUVs",5,5,4 ),
-        Car(7, R.drawable.car07, "Volkswagen Transporter", "Multipurpose seat", "Vans",10,6,3 )
+        Car(0, R.drawable.car01, "Ford Focus", "Eco Boost", "Sedan",4,3,4 ),
+        Car(0, R.drawable.car02, "Toyota Camry", "Comfort Mode", "Sedan",4,4,4 ),
+        Car(0, R.drawable.car03, "Nissan Leaf", "Flex Fuel", "Sedan",4,2,4 ),
+        Car(0, R.drawable.car04, "Honda CRV", "Vtec LEV", "SUVs",5,5,4 ),
+        Car(0, R.drawable.car05, "KIA Sportage", "Full time 4 wheels", "SUVs",5,5,4 ),
+        Car(0, R.drawable.car06, "Toyota RAV4", "Hybrid vehicle", "SUVs",5,5,4 ),
+        Car(0, R.drawable.car07, "Volkswagen Transporter", "Multipurpose seat", "Vans",10,6,3 )
     ),
 
     //Database Reservations
@@ -80,7 +80,7 @@ data class AppUiState (
             cvc = "123"
         ),
         Reservation(
-            id = 1,
+            id = 0,
             userId = 0,
             carId = 0,
             location = "Calgary",
@@ -93,7 +93,7 @@ data class AppUiState (
             cvc = "123"
         ),
         Reservation(
-            id = 2,
+            id = 0,
             userId = 1,
             carId = 0,
             location = "Calgary",
@@ -106,7 +106,7 @@ data class AppUiState (
             cvc = "123"
         ),
         Reservation(
-            id = 3,
+            id = 0,
             userId = 1,
             carId = 1,
             location = "Calgary",
@@ -119,7 +119,7 @@ data class AppUiState (
             cvc = "123"
         ),
         Reservation(
-            id = 4,
+            id = 0,
             userId = 1,
             carId = 6,
             location = "Calgary",
@@ -132,7 +132,7 @@ data class AppUiState (
             cvc = "123"
         ),
         Reservation(
-            id = 5,
+            id = 0,
             userId = 1,
             carId = 5,
             location = "Calgary",
@@ -145,7 +145,7 @@ data class AppUiState (
             cvc = "123"
         ),
         Reservation(
-            id = 6,
+            id = 0,
             userId = 0,
             carId = 1,
             location = "Calgary",
@@ -158,7 +158,7 @@ data class AppUiState (
             cvc = "123"
         ),
         Reservation(
-            id = 7,
+            id = 0,
             userId = 1,
             carId = 2,
             location = "Calgary",
@@ -171,7 +171,7 @@ data class AppUiState (
             cvc = "123"
         ),
         Reservation(
-            id = 8,
+            id = 0,
             userId = 1,
             carId = 3,
             location = "Calgary",
@@ -184,7 +184,7 @@ data class AppUiState (
             cvc = "123"
         ),
         Reservation(
-            id = 9,
+            id = 0,
             userId = 1,
             carId = 4,
             location = "Calgary",
@@ -197,7 +197,7 @@ data class AppUiState (
             cvc = "123"
         ),
         Reservation(
-            id = 10,
+            id = 0,
             userId = 1,
             carId = 5,
             location = "Calgary",
