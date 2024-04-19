@@ -309,7 +309,7 @@ fun CarRentalApp(
                 val coroutineScope = rememberCoroutineScope()
                 DisplayPageFinalReservationDetails(
                     appUiState = uiState,
-                    onBackButtonClicked = { navController.navigate(PageTypes.Search.name) },
+                    onBackButtonClicked = { navController.navigateUp() },
                     onConfirmButtonClicked = {currentReservation ->
                         if (
                             currentReservation.location.isEmpty() or
@@ -337,7 +337,7 @@ fun CarRentalApp(
                 val context = LocalContext.current.applicationContext
                 DisplayPageSummary(
                     appUiState = uiState,
-                    onBackButtonClicked = { navController.navigate(PageTypes.Search.name) },
+                    onBackButtonClicked = { navController.navigateUp() },
                     onConfirmButtonClicked = {
                         Toast.makeText(context, "Reservation Successful", Toast.LENGTH_SHORT).show()
                         navController.navigate(PageTypes.Landing.name)

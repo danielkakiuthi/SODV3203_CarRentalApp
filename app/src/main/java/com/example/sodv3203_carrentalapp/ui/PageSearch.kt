@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sodv3203_carrentalapp.R
 import com.example.sodv3203_carrentalapp.data.Car
 import com.example.sodv3203_carrentalapp.ui.theme.SODV3203_CarRentalAppTheme
@@ -41,6 +42,7 @@ fun DisplayPageSearch(
     onBackButtonClicked: () -> Unit,
     onSelectButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: AppViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
 
     val selectedCar: Car = appUiState.selectedCar ?: appUiState.placeholderCar
